@@ -34,8 +34,8 @@ struct query { // es una bola
     double r; // radio
 };
 
+/* Búsqueda recursiva de los puntos de la bola que son parte del MTree */
 vector<Point> search(Node* T, query Q) {
-    // búsqueda recursiva de los puntos de la bola que son parte del MTree
     vector<Point> res; // vector de resultados con los puntos que se buscan
     if (T->isLeaf()) { // caso base: estamos buscando en una hoja
         if (dist(T->p, Q.q) <= Q.r) { // si dist(p,q) <= r -> agregamos p a los resultados
@@ -46,4 +46,5 @@ vector<Point> search(Node* T, query Q) {
             search(T->a, Q);
         }
     }
+    return res;
 }
