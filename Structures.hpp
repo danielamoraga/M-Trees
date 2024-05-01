@@ -16,8 +16,8 @@ double dist(Point p, Point q) {
 
 /* Estructura que define a un nodo de un MTree */
 struct Node {
-    Point p; // punto que define al nodo
-    double cr; // nadio cobertor: máxima distancia entre p y cualquier punto del árbol
+    vector<Point> p; // punto que define al nodo
+    double cr; // radio cobertor: máxima distancia entre p y cualquier punto del árbol
     Node *a; // dirección en disco a la página de su hijo identificado por (p,cr,a) de su nodo interno
 
     bool isLeaf() {
@@ -38,12 +38,16 @@ struct query { // es una bola
 vector<Point> search(Node* T, query Q) {
     vector<Point> res; // vector de resultados con los puntos que se buscan
     if (T->isLeaf()) { // caso base: estamos buscando en una hoja
-        if (dist(T->p, Q.q) <= Q.r) { // si dist(p,q) <= r -> agregamos p a los resultados
-            res.push_back(T->p);
+        for(int i=0;i<T->p.size();i++) {
+            if (dist(T->p[i], Q.q) <= Q.r) { // si dist(p,q) <= r -> agregamos p a los resultados
+                res.push_back(T->p[i]);
+            }
         }
     } else { // buscando en un nodo interno
-        if (dist(T->p, Q.q) <= T->cr + Q.r) { // si dist(p,q) <= cr+r -> buscamos en el hijo de este nodo
-            search(T->a, Q);
+        for(int i=0;i<T->p.size();i++) {
+            if (dist(T->p[i], Q.q) <= T->cr + Q.r) { // si dist(p,q) <= cr+r -> buscamos en el hijo de este nodo
+                search(T->a, Q);
+            }
         }
     }
     return res;
