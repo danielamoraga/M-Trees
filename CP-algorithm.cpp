@@ -11,7 +11,6 @@
 Node* CPalgorithm(vector<Point> P, int n, int B){
     
     // 1.
-    // se insertan todos los puntos a T y se retorna T
     if (P.size() <= B) { // si el tamaño de P es menor o igual que B
         Node *T = new Node(); // se crea un árbol T
         for (int i=0;i < P.size();++i) { // se insertan todos los puntos a T
