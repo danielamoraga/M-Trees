@@ -3,52 +3,80 @@
 
 using namespace std;
 
+/* ESTRUCTURAS */
+
 /* Estructura que define un punto */
 struct Point {
     double x;
     double y;
 };
 
-/* Distancia euclidiana entre dos puntos */
-double dist(Point p, Point q) {
-    return sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
-}
-
-/* Estructura que define a un nodo de un MTree */
-struct Node {
-    vector<Point> p; // punto que define al nodo
+/* Estructura para las entradas que pueden haber en un nodo */
+struct entry {
+    Point p; // punto
     double cr; // radio cobertor: máxima distancia entre p y cualquier punto del árbol
-    Node *a; // dirección en disco a la página de su hijo identificado por (p,cr,a) de su nodo interno
+    Node* a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
+};
 
-    bool isLeaf() {
-        if (a == NULL) { // no hay direcciones a nodos hijo
-            cr = NULL; // radio cobertor también es nulo
-            return true; // es hoja
+struct Node {
+    vector<entry> entries; // nodo raíz identificado por su entrada
+    bool isLeaf;
+    vector<Node *> children; // nodos internos
+
+    void calc_cr() {
+        // calcula cr de todos los puntos en el nodo
+        for (int i=1; i<entries.size(); i++) {
+            // calcular cr para cada entries[i]
+            Point point = entries[i].p; // punto actual
+            Point pivote = entries[0].p; // punto pivote
+            entries[i].cr = dist(point, pivote); // cr actual
+            for (int j=1; j<entries.size();j++) {
+                if (dist(point, entries[j].p) > dist(point, pivote))
+                    entries[i].cr = dist(point, entries[j].p);
+            }
         }
-        else return false; // en caso contrario, no es hoja
     }
 };
 
-struct query { // es una bola
+struct query { // es una bola Q=(q,r)
     Point q; // punto
     double r; // radio
 };
 
-/* Búsqueda recursiva de los puntos de la bola que son parte del MTree */
+/* MÉTODOS */
+
+/* Distancia euclidiana entre dos puntos */
+double dist(Point p, Point q) {
+    return sqrt(pow(p.x - q.x,2) + pow(p.y - q.y, 2));
+}
+
+/* Método para crear una hoja */
+Node *newLeaf(vector<Point> points) {
+    Node *leaf = new Node;
+    for (int i=0; i<points.size(); i++) {
+        leaf->entries[i].p = points[i];
+        leaf->entries[i].cr = NULL;
+        leaf->entries[i].a = NULL;
+    }
+    leaf->isLeaf = true;
+    return leaf;
+}
+
+/* Método de búsqueda */
 vector<Point> search(Node* T, query Q) {
-    vector<Point> res; // vector de resultados con los puntos que se buscan
-    if (T->isLeaf()) { // caso base: estamos buscando en una hoja
-        for(int i=0;i<T->p.size();i++) {
-            if (dist(T->p[i], Q.q) <= Q.r) { // si dist(p,q) <= r -> agregamos p a los resultados
-                res.push_back(T->p[i]);
-            }
+    vector<Point> res; // vector que contendrá los puntos de Q contenidos en el árbol
+    if (T->isLeaf) { // si el nodo raíz es una hoja
+        for (int i=0; i<T->entries.size(); i++) {
+            // se verifica para cada entrada si p cumple dist(p,q)<=r
+            if (dist(T->entries[i].p, Q.q) <= Q.r)
+                res.push_back(T->entries[i].p); // se agrega p a la respuesta
         }
-    } else { // buscando en un nodo interno
-        for(int i=0;i<T->p.size();i++) {
-            if (dist(T->p[i], Q.q) <= T->cr + Q.r) { // si dist(p,q) <= cr+r -> buscamos en el hijo de este nodo
-                search(T->a, Q);
-            }
+    } else { // si el nodo es interno
+        for (int i=0; i<T->entries.size(); i++) {
+            // se verifica para cada entrada si dist(p,q)<=cr+r
+            if (dist(T->entries[i].p, Q.q) <= T->entries[i].cr+Q.r)
+                search(T->entries[i].a, Q); // se buscan posibles respuestas en el hijo a
         }
     }
-    return res;
+    return res; // retornamos el vector con los resultados
 }
