@@ -1,4 +1,4 @@
-#include "structures.hpp"
+#include "Structures.hpp"
 
 #include <random>
 #include <iostream>
