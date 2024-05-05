@@ -62,6 +62,16 @@ Node *newLeaf(vector<Point> points) {
     return leaf;
 }
 
+/* Método para eliminar la raíz de un árbol */
+vector<Node *> delRoot(Node* T) {
+    vector<Node *> nodes; // hijos de T
+    for (int i=0; i<T->children.size(); i++)
+        nodes.push_back(T->children[i]);
+    T->children.clear();
+    delete T;
+    return nodes;
+}
+
 /* Método de búsqueda */
 vector<Point> search(Node* T, query Q) {
     vector<Point> res; // vector que contendrá los puntos de Q contenidos en el árbol

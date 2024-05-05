@@ -17,22 +17,26 @@ Node* CPalgorithm(vector<Point> P, int B){
         Node *T = newLeaf(P); // el árbol es una hoja que contiene a todos los puntos
         return T;
     }
+
     vector<Point> F; // conjunto de samples
-    vector<vector<Point>> Fk = steps_2_to_5(P, b, B, F);
+    vector<vector<Point>> Fk = steps_2_to_5(P, b, B, F); // crea el conjunto de conjuntos Fk y modifica F
 
     // se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
     // -> genera k árboles Tj ?
+    vector<Node*> Tk;
     for (int j=0; j<Fk.size(); j++) {
-        vector<Node*> Tk;
         Node* Tj = CPalgorithm(Fk[j], B);
         Tk.push_back(Tj);
+
+        if (Tj->entries.size() < b) { // si la raíz de Tj es de tamaño menor a b
+            vector<Node *> Tj_nodes = delRoot(Tj); // se quita esa raíz
+            F.erase(F.begin() + j); // se elimina pfj de F
+            for (int i=0; i<Tj_nodes.size(); i++) 
+                Tk.push_back(Tj_nodes[i]); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
+        }
     }
 
-    // si la raíz de T es de tamaño menor a b
-    // -> se quita esa raíz
-    // se elimina pfj de F
-    // se trabaja con sus subárboles como nuevos Tj,...,Tj+p-1
-    
+
 }
 
 /*  Modifica Fk haciendo que sea un conjunto de k conjuntos de puntos
