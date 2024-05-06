@@ -1,5 +1,4 @@
 #include "Structures.hpp"
-
 #include <random>
 #include <iostream>
 #include <algorithm>
