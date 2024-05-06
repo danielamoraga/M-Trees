@@ -39,17 +39,30 @@ Node* CPalgorithm(vector<Point> P, int B){
         }
     }
 
-    balancing(Tk, F);
+    vector<Node*> M = balancing(Tk, F);
 
     // se define Tsup como el resultado de la llamada al algoritmo CP aplicado a F
     Node* Tsup = CPalgorithm(F, B);
 
-    // se une cada Tj en T' a su hoja en Tsup correspondiente al punto pfj en F, obteniendo un nuevo árbol T
+    // se une cada Tj en M a su hoja en Tsup correspondiente al punto pfj en F, obteniendo un nuevo árbol T
+    for (int j = 0; j < M.size(); j++) {
+        // Buscar el punto pfj en F
+        Point pfj = F[j];
+        // Buscar la hoja correspondiente en Tsup
+        for(int i=0; i<Tsup->nodes.size(); i++) {
+            if (Tsup->nodes[i]->entrada.p == pfj) {
+                Tsup->nodes[i]->nodes.push_back(M[j]); // Unir Tj a la hoja encontrada en Tsup
+                break;
+            }
+            else continue;
+        }
+    }
 
     // se setean los radios cobertores resultantes para cada entrada en este árbol.
+    setCR(Tsup);
 
     // se retorna T
-    // return T;
+    return Tsup;
 }
 
 /* FUNCIONES PARA EL ALGORITMO */
@@ -145,18 +158,13 @@ int minHeight(vector<Node*> Tk) {
     }
 }
 // balancea el árbol y modifica F
-void balancing(vector<Node*> Tk, vector<Point> F){
-    // h_min: altura mínima de de los árboles Tj
-    int h_min = minHeight(Tk);
-
-    // M: conjunto inicialmente vacío
-    vector<Node*> M;
-
-    // por cada Tj, si su altura es igual a h, se añade a M
-    for (int i=0; i<Tk.size(); i++) {
-        if (Tk[i]->height() == h_min)  
-            M.push_back(Tk[i]);
-        else { // sino, 
+vector<Node*> balancing(vector<Node*> Tk, vector<Point> F){
+    int h = minHeight(Tk); // altura mínima de de los árboles Tj
+    vector<Node*> M; // conjunto inicialmente vacío
+    for (int i=0; i<Tk.size(); i++) { // por cada Tj,
+        if (Tk[i]->height() == h)  // si su altura es igual a h
+            M.push_back(Tk[i]); // se añade a M
+        else { // sino
             F.erase(F.begin() + i); // se borra el punto pertinente en F
             // se hace una búsqueda exhaustiva en Tj de todos sus subárboles de altura igual a h y se insertan en M
             // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
@@ -165,4 +173,33 @@ void balancing(vector<Node*> Tk, vector<Point> F){
             }
         }
     }
+    return M;
 }
+
+/*Paso 10*/
+void searchPoint(Node* T, Point p, Node* M) {
+    for(int i=0; i<T->nodes.size(); i++) {
+        Node* thisNode = T->nodes[i];
+        if (thisNode->entrada.p == p)
+            T->nodes[i]->nodes.push_back(M);
+        else
+            continue;
+    }
+}
+
+/*  Paso 11:
+    Calcula el radio cobertor de cada punto en un árbol */
+void setCR(Node* T) {
+    double max_distance = 0.0;
+    for (int i=0; i < T->nodes.size(); i++) {
+        double distance = dist(T->entrada.p, T->nodes[i]->entrada.p);
+        if (distance > max_distance) {
+            max_distance = distance;
+        }
+    }
+    T->entrada.cr = max_distance;
+    for (int i = 0; i < T->nodes.size(); i++) {
+        setCR(T->nodes[i]);
+    }
+}
+
