@@ -81,7 +81,7 @@ void k_samples(vector<Point> P, int k, int n, int B, vector<Point> F) {
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> distr(0,n);
-    int K = min(B, n/B);
+    int K = min((double)B, ceil(n/B));
     for (int i=0; i<K; i++) { // creamos k=min(B,n/B) samples de manera aleatoria
         Point pf;
         int random_index = distr(gen);
