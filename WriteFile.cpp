@@ -1,4 +1,5 @@
 #include "Structures.hpp"
+#include "CP-algorithm.cpp"
 #include <random>
 
 /*Crea 2^n puntos random*/
@@ -35,4 +36,12 @@ vector<query> createRandomQueries() {
 int main() {
     vector<Point> P = createRandomPoints(10); // 2^10
     vector<query> Q = createRandomQueries();
+    vector<Point> r;
+    Node* T = CPalgorithm(P,4096);
+    for (int i=0; i<Q.size(); i++) {
+        r = search(T, Q[i]);
+    }
+    for(int i=0; i<r.size(); i++) {
+        printf("Punto: ", r[i].x, ",", r[i].y);
+    }
 }
