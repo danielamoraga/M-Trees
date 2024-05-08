@@ -1,4 +1,5 @@
 #include "Structures.hpp"
+#include "CP-algorithm.cpp"
 #include <random>
 #include "CP-algorithm.cpp"
 #include <iostream>

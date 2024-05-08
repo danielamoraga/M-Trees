@@ -89,3 +89,15 @@ vector<Point> search(Node* T, query Q) {
     }
     return res; // retornamos el vector con los resultados
 }
+
+void printMtree(Node* T) {
+    if (T = NULL) return;
+    else {
+        printf("punto raíz: ", T->entrada.p, "/np radio cobertor: ", T->entrada.cr);
+        for (int i=0; i<T->nodes.size(); i++) {
+            printf("Hijos ", i, ":/n");
+            printMtree(T->nodes[i]);
+        }
+        
+    }
+}
