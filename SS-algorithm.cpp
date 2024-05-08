@@ -1,4 +1,4 @@
-#include "Cluster.hpp"
+#include "utils_SS.hpp"
 
 
 // Medoide: punto de un cluster que se elige como candidato a "centro" de una bola. Se caracteriza porque es el punto que genera el menor radio para un cluster.
@@ -84,32 +84,29 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
   // 7. Se retorna Cout
   return Cout;
 }
-/*
-Retorna el par más cercano en el cluster C.
-Par más cercano: c1 y c2 tq dist(c1,c2) <= dist(ci,cj) para todo i,j
-*/
-pair<ClusterT, ClusterT> closestPair(vector<ClusterT> C){}
 
 /*
-Añade el cluster c al vector de clusters C
+OutputHoja: Retorna tupla (g, r, a) donde g es el medoide primario de Cin, r es radio cobertor y a la direccion del hijo respectivo.
+Input: Cin
 */
-void clusterAdd(ClusterT c, vector<ClusterT>& C){}
+tuple<Point, int, Node*> OutputHoja(vector<Point> Cin){
 
-/*
-Remueve el cluster c del vector de clusters C
-*/
-void clusterRemove(ClusterT c, vector<ClusterT>& C){}
+  // 1. Sea g el medoide primario de Cin. Sea r = 0. Sea C = {} (el que corresponderá al nodo hoja).
+  Point g = getPrimaryMedoid(Cin);
+  int r = 0;
+  Node C;
+  C.nodes = {};
 
-/*
-Divide un cluster usando MinMax split policy.
+  // 2. Por cada p ∈ Cin: Añadimos (p, null, null) a C. Seteamos r = max(r, dist(g, p))
+  for (Point p : Cin){
+    // Añadimos (p, null, null) a C
+    // Seteamos r = max(r, dist(g, p))
+  }
 
-MinMax split policy: Se considera todos los posibles pares de
-puntos, y alternadamente se van agregando el punto más cercano a alguno de estos centros
-(esto garantiza que la división sea balanceada) y se calcula el radio cobertor máximo entre estos
-dos grupos resultantes. Esto se prueba para todo par de puntos y se elige el par que tenga el
-mínimo radio cobertor máximo.
-*/
-pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){}
+  // 3. Guardamos el puntero a C como a
+  Node* a;
+
+}
 
 // notas:
 //  m, r, a -> vector de vector de entradas
