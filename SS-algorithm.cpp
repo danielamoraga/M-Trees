@@ -104,8 +104,10 @@ tuple<Point, int, Node*> OutputHoja(vector<Point> Cin){
   }
 
   // 3. Guardamos el puntero a C como a
-  Node* a;
+  Node* a = &C;
 
+  // 4. Retornamos (g, r, a)
+  return {g, r, a};
 }
 
 // notas:
