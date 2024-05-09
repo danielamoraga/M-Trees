@@ -16,8 +16,9 @@ Node *CPalgorithm(vector<Point> P, int B)
     double b = 0.5 * B;
 
     if (P.size() <= B)
-    {                         // si el tamaño de P es menor o igual que B
-        Node *T = newNode(P); // el árbol contiene a todos los puntos
+    {
+        cout << "si el tamaño de P es menor o igual que B" << endl; // si el tamaño de P es menor o igual que B
+        Node *T = newNode(P);                                       // el árbol contiene a todos los puntos
         return T;
     }
 
@@ -38,8 +39,8 @@ Node *CPalgorithm(vector<Point> P, int B)
             F.erase(F.begin() + j);                // se elimina pfj de F
             for (int i = 0; i < Tj_nodes.size(); i++)
             {
-                Tk.push_back(Tj_nodes[i]);    // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                F.push_back(Tj[i].entrada.p); // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
+                Tk.push_back(Tj_nodes[i]); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
+                F.push_back(Tj[i].p);      // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
             }
         }
     }
@@ -57,7 +58,7 @@ Node *CPalgorithm(vector<Point> P, int B)
         // Buscar la hoja correspondiente en Tsup
         for (int i = 0; i < Tsup->nodes.size(); i++)
         {
-            if (Tsup->nodes[i]->entrada.p == pfj)
+            if (Tsup->nodes[i]->p == pfj)
             {
                 Tsup->nodes[i]->nodes.push_back(M[j]); // Unir Tj a la hoja encontrada en Tsup
                 break;

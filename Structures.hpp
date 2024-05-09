@@ -25,13 +25,9 @@ string PointToString(Point p)
 struct Node
 {
     /* Estructura para las entradas que pueden haber en un nodo */
-    struct entry
-    {
-        Point p;   // punto
-        double cr; // radio cobertor: máxima distancia entre p y cualquier punto del árbol
-        Node *a;   // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
-    };
-    entry entrada;        // entrada del nodo
+    Point p;              // punto
+    double cr;            // radio cobertor: máxima distancia entre p y cualquier punto del árbol
+    Node *a;              // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
     vector<Node *> nodes; // nodos internos
 
     int height()
@@ -57,8 +53,8 @@ struct Node
     {
         if (nodes.empty())
         {
-            entrada.a = NULL;
-            entrada.cr = NULL;
+            a = NULL;
+            cr = NULL;
             return true;
         }
         else
@@ -103,16 +99,16 @@ vector<Point> search(Node *T, query Q)
     vector<Point> res; // vector que contendrá los puntos de Q contenidos en el árbol
     if (T->isLeaf())
     { // si el nodo raíz es una hoja
-        if (dist(T->entrada.p, Q.q) <= Q.r)
-            res.push_back(T->entrada.p); // se agrega p a la respuesta
+        if (dist(T->p, Q.q) <= Q.r)
+            res.push_back(T->p); // se agrega p a la respuesta
     }
     else
     { // si el nodo es interno
         for (int i = 0; i < T->nodes.size(); i++)
         {
             // se verifica para cada entrada si dist(p,q)<=cr+r
-            if (dist(T->nodes[i]->entrada.p, Q.q) <= T->nodes[i]->entrada.cr + Q.r)
-                search(T->nodes[i]->entrada.a, Q); // se buscan posibles respuestas en el hijo a
+            if (dist(T->nodes[i]->p, Q.q) <= T->nodes[i]->cr + Q.r)
+                search(T->nodes[i]->a, Q); // se buscan posibles respuestas en el hijo a
         }
     }
     return res; // retornamos el vector con los resultados
@@ -124,9 +120,9 @@ void printMtree(Node *T)
         return;
     else
     {
-        const Point p = T->entrada.p;
+        const Point p = T->p;
 
-        cout << "punto raíz: " << PointToString(p) << "/np radio cobertor: " << T->entrada.cr << endl;
+        cout << "punto raíz: " << PointToString(p) << "/np radio cobertor: " << T->cr << endl;
         for (int i = 0; i < T->nodes.size(); i++)
         {
             cout << "Hijos " << i << endl;

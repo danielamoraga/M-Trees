@@ -3,9 +3,20 @@
 Node *newNode(vector<Point> P)
 {
     /* Crea un nodo vacío con las entradas P y devuelve un puntero a él */
-    Node *T = new Node;
+    cout << "creo newNode antes del for" << endl;
+    Node *T = new Node();
+    cout << "se crea el nodo" << endl;
+    cout << "tamaño de P: " << P.size() << endl;
+
     for (int i = 0; i < P.size(); i++)
-        T->nodes[i]->entrada.p = P[i];
+    {
+        cout << "antes de agregar nodo: " << i << endl;
+        Node *thisNode = T->nodes[i];
+        cout << "recupero el nodo" << endl;
+        thisNode->p = P[i];
+        cout << ". Se agregó nodo: " << i << endl;
+    }
+    cout << "después del for de newNode" << endl;
     return T;
 }
 
@@ -17,8 +28,7 @@ void k_samples(vector<Point> P, int k, int n, int B, vector<Point> F)
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> distr(0, n);
-    int k = ceil(n/B);
-    int K = min(B, k);
+    int K = min(B, (int)ceil(n / B));
     for (int i = 0; i < K; i++)
     { // creamos k=min(B,n/B) samples de manera aleatoria
         Point pf;
@@ -84,7 +94,7 @@ void redistribution(vector<vector<Point>> Fk, vector<Point> F, double b, int k)
 vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Point> F)
 {
     int n = P.size();
-    int k = ceil(n/B);
+    int k = ceil(n / B);
     int K = min(B, k);
     k_samples(P, K, n, B, F);                     // step 2
     vector<vector<Point>> Fk = assignation(P, F); // step 3
@@ -138,7 +148,7 @@ void searchPoint(Node *T, Point p, Node *M)
     for (int i = 0; i < T->nodes.size(); i++)
     {
         Node *thisNode = T->nodes[i];
-        if (thisNode->entrada.p == p)
+        if (thisNode->p == p)
             T->nodes[i]->nodes.push_back(M);
         else
             continue;
@@ -152,13 +162,13 @@ void setCR(Node *T)
     double max_distance = 0.0;
     for (int i = 0; i < T->nodes.size(); i++)
     {
-        double distance = dist(T->entrada.p, T->nodes[i]->entrada.p);
+        double distance = dist(T->p, T->nodes[i]->p);
         if (distance > max_distance)
         {
             max_distance = distance;
         }
     }
-    T->entrada.cr = max_distance;
+    T->cr = max_distance;
     for (int i = 0; i < T->nodes.size(); i++)
     {
         setCR(T->nodes[i]);

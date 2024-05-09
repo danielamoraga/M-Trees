@@ -54,7 +54,7 @@ int main()
         cout << "antes de search" << endl;
         const vector<Point> res = search(MTree, Q[i]);
         cout << "después de search" << endl;
-        for (int k; k < P.size();)
+        for (int k; k < P.size(); k++)
         {
             cout << "Punto (" << P[i].x << ", " << P[i].y << ") está en la consulta" << endl;
         }
