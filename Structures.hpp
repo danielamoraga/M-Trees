@@ -54,7 +54,7 @@ struct Node
         if (nodes.empty())
         {
             a = NULL;
-            cr = NULL;
+            cr = 0.0; // Assign 0.0 instead of NULL
             return true;
         }
         else
@@ -108,7 +108,11 @@ vector<Point> search(Node *T, query Q)
         {
             // se verifica para cada entrada si dist(p,q)<=cr+r
             if (dist(T->nodes[i]->p, Q.q) <= T->nodes[i]->cr + Q.r)
-                search(T->nodes[i]->a, Q); // se buscan posibles respuestas en el hijo a
+            {
+                Node* thisNode = T->nodes[i]; // declare the variable "thisNode"
+                for (int j=0; j<thisNode->nodes.size(); j++)
+                    search(thisNode->nodes[j], Q); // se buscan posibles respuestas en el hijo a
+            }
         }
     }
     return res; // retornamos el vector con los resultados

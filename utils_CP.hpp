@@ -101,7 +101,7 @@ vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Poin
     redistribution(Fk, F, b, k);                  // step 4
     if (F.size() == 1)
     { // step 5
-        steps_2_to_5(P, b, B, F);
+        return steps_2_to_5(P, b, B, F);
     }
     else
     {
@@ -118,6 +118,7 @@ int minHeight(vector<Node *> Tk)
     {
         int h_min = min(h_min, Tk[k]->height());
     }
+    return h_min;
 }
 // balancea el árbol y modifica F
 vector<Node *> balancing(vector<Node *> Tk, vector<Point> F)
