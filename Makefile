@@ -1,4 +1,4 @@
-APP_PATH = ./app/app
+APP_PATH = ./app
 
 compile:
 	g++ SS-algorithm.cpp -o $(APP_PATH)

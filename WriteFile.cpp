@@ -54,7 +54,10 @@ int main()
         vector<Point> result = search(MTree, Q[i], res);
         cout << "estoy buscando la consulta " << Q[i].q.x << "," << Q[i].q.y << "en esta cantidad de resultados " << result.size() << endl;
 
-        cout << "Punto (" << P[i].x << ", " << P[i].y << ") está en la consulta " << i << endl;
+        for (int k = 0; k < result.size(); k++)
+        {
+            cout << "Punto (" << result[i].x << ", " << result[i].y << ") está en la consulta " << i << endl;
+        }
 
         if (result.size() == 0)
             cout << "Vacío" << endl;

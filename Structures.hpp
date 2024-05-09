@@ -119,7 +119,7 @@ vector<Point> search(Node *T, query Q, vector<Point> res)
                 cout << "busca en los hijos" << endl;
                 vector<Point> nodeResults = search(T->nodes[i], Q, res); // declare the variable "thisNode"
                 cout << "tamaño de res2 " << res.size() << endl;
-                res.insert(res.end(), nodeResults.begin(), nodeResults.end()); // se buscan posibles respuestas en el hijo a
+                res.assign(nodeResults.begin(), nodeResults.end()); // se buscan posibles respuestas en el hijo a
             }
         }
     }
