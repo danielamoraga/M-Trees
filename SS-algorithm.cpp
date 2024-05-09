@@ -110,6 +110,63 @@ tuple<Point, int, Node*> OutputHoja(vector<Point> Cin){
   return {g, r, a};
 }
 
+/*
+OutputInterno: Retorna (G, R, A) donde G es el medoide primario del conjunto de puntos
+Cin = {g|∃(g, r, a) ∈ Cmra}, R el radio cobertor, y A la dirección del hijo respectivo.
+
+Input: Cmra, un conjunto de tuplas (g, r, a) retornadas por OutputHoja
+*/
+tuple<Point, int, Node*> OutputInterno(vector<tuple<Point, int, Node*>> Cmra){
+  // 1. Sea Cin = {g|∃(g, r, a) ∈ Cmra}. G el medoide primario de Cin. Sea R = 0. Sea C = {} (el que corresponderá a un nodo interno).
+
+  // 2. Por cada (g, r, a) ∈ Cmra: Añadir (g, r, a) a C. Se setea R = max(R, dist(G, g) + r)
+
+  // 3. Guardamos el puntero a C como A.
+
+  // 4. Retornamos (G, R, A)
+
+}
+
+/*
+AlgoritmoSS: retorna la raíz del M-tree construído.
+
+Input: Cin, un conjunto de puntos
+*/
+Node* SSAlgorithm(vector<Point> Cin, int B){
+  // 1. Si |Cin| ≤ B: Se define (g, r, a) = OutputHoja(Cin) y se retorna a
+  if (Cin.size() <= B){
+    tuple<Point, int, Node*> g_r_a =  OutputHoja(Cin);
+    Node* a = get<2>(g_r_a);
+    return a;
+  }
+
+  // 2. Sea Cout = Cluster(Cin). Sea C = {}.
+  vector<ClusterT> Cout = Cluster(Cin, B);
+  vector<tuple<Point, int, Node*>> C = {};
+
+  // 3. Por cada c ∈ Cout: Se añade OutputHoja(c) a C
+  for (ClusterT c: Cout){
+    C.push_back(OutputHoja(c.points));
+  }
+
+  // 4. Mientras |C| > B:
+  while (C.size() > B){
+    // 4.1 Sea Cin = {g|(g, r, a) ∈ C}. Sea Cout = Cluster(Cin). Sea Cmra = {}
+
+    // 4.2 Por cada c ∈ Cout: Sea s = {(g, r, a)|(g, r, a) ∈ C ∧ g ∈ c}, se añade s a Cmra
+
+    // 4.3 Sea C = {}.
+
+    // 4.4 Por cada s ∈ Cmra: Añadir OutputInterno(s) a C
+  }
+
+  // 5. Sea (g, r, a) = OutputInterno(C)
+
+  // 6. Se retorna a
+
+}
+
+
 // notas:
 //  m, r, a -> vector de vector de entradas
 //  para entry usar shared_ptr, para no tener problemas de memoria (en caso de que hayan problemas de memoria)
