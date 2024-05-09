@@ -1,12 +1,9 @@
-#include "Structures.hpp"
 #include "CP-algorithm.cpp"
 #include <random>
-#include "CP-algorithm.cpp"
 #include <iostream>
 
 /*Crea 2^n puntos random*/
 vector<Point> createRandomPoints(int n)
-#include <iostream>
 
 {
     vector<Point> P;
@@ -47,17 +44,20 @@ int main()
 {
     vector<Point> P = createRandomPoints(10); // 2^10
     vector<query> Q = createRandomQueries();
-
     // Crear un M-Tree con el algoritmo CP
+    cout << "antes del arbol" << endl;
     Node *MTree = CPalgorithm(P, 4096);
 
     // Buscar cada consulta en el M-Tree
-    for (query q : Q)
+    cout << "antes de buscar por cada consulta" << endl;
+    for (int i = 0; i < Q.size(); i++)
     {
-        const vector<Point> res = search(MTree, q);
-        for (Point p : res)
+        cout << "antes de search" << endl;
+        const vector<Point> res = search(MTree, Q[i]);
+        cout << "después de search" << endl;
+        for (int k; k < P.size();)
         {
-            cout << "Punto (" << p.x << ", " << p.y << ") está en la consulta" << endl;
+            cout << "Punto (" << P[i].x << ", " << P[i].y << ") está en la consulta" << endl;
         }
     }
 }
