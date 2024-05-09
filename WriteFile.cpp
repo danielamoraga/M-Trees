@@ -15,7 +15,7 @@ vector<Point> createRandomPoints(int n)
         p.x = distr(gen);
         p.y = distr(gen);
         P.push_back(p);
-        cout << "Punto " << i << ": (" << p.x << ", " << p.y << ")" << endl;
+        // cout << "Punto " << i << ": (" << p.x << ", " << p.y << ")" << endl;
     }
     return P;
 }
@@ -41,22 +41,22 @@ vector<query> createRandomQueries()
 
 int main()
 {
-    vector<Point> P = createRandomPoints(10); // 2^10
+    vector<Point> P = createRandomPoints(100); // 2^10
     vector<query> Q = createRandomQueries();
     // Crear un M-Tree con el algoritmo CP
-    cout << "antes del arbol" << endl;
     Node *MTree = CPalgorithm(P, 4096);
 
     // Buscar cada consulta en el M-Tree
     cout << "antes de buscar por cada consulta" << endl;
     for (int i = 0; i < Q.size(); i++)
     {
-        cout << "antes de search" << endl;
+        cout << "estoy buscando la consulta " << Q[i].q.x << "," << Q[i].q.y << endl;
         const vector<Point> res = search(MTree, Q[i]);
-        cout << "después de search" << endl;
-        for (int k; k < P.size(); k++)
+        for (int k = 0; k < res.size(); k++)
         {
-            cout << "Punto (" << P[i].x << ", " << P[i].y << ") está en la consulta" << endl;
+            cout << "Punto (" << P[i].x << ", " << P[i].y << ") está en la consulta " << i << endl;
         }
+        if (res.size() == 0)
+            cout << "Vacío" << endl;
     }
 }
