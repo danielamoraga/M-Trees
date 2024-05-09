@@ -102,7 +102,7 @@ vector<Point> search(Node *T, query Q, vector<Point> res)
         if (dist(T->p, Q.q) <= Q.r)
         {
             res.push_back(T->p); // se agrega p a la respuesta
-            cout << "se agrega" << T->p.x << "," << T->p.y << " a la respuesta" << endl;
+            cout << "se agrega " << T->p.x << "," << T->p.y << " a la respuesta" << endl;
             cout << "tamaño de res1 " << res.size() << endl;
         }
     }

@@ -56,7 +56,7 @@ int main()
 
         for (int k = 0; k < result.size(); k++)
         {
-            cout << "Punto (" << result[i].x << ", " << result[i].y << ") está en la consulta " << i << endl;
+            cout << "Punto (" << result[k].x << ", " << result[k].y << ") está en la consulta " << i << endl;
         }
 
         if (result.size() == 0)
