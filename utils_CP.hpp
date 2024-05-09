@@ -17,7 +17,8 @@ void k_samples(vector<Point> P, int k, int n, int B, vector<Point> F)
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> distr(0, n);
-    int K = min((double)B, ceil(n / B));
+    int k = ceil(n/B);
+    int K = min(B, k);
     for (int i = 0; i < K; i++)
     { // creamos k=min(B,n/B) samples de manera aleatoria
         Point pf;
@@ -83,8 +84,9 @@ void redistribution(vector<vector<Point>> Fk, vector<Point> F, double b, int k)
 vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Point> F)
 {
     int n = P.size();
-    int k = min(B, n / B);
-    k_samples(P, k, n, B, F);                     // step 2
+    int k = ceil(n/B);
+    int K = min(B, k);
+    k_samples(P, K, n, B, F);                     // step 2
     vector<vector<Point>> Fk = assignation(P, F); // step 3
     redistribution(Fk, F, b, k);                  // step 4
     if (F.size() == 1)

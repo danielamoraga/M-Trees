@@ -4,7 +4,6 @@
 
 /*Crea 2^n puntos random*/
 vector<Point> createRandomPoints(int n)
-
 {
     vector<Point> P;
     random_device rd;
