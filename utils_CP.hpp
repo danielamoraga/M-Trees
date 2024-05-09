@@ -1,21 +1,23 @@
 #include "Structures.hpp"
 
-Node *newNode(vector<Point> P)
+vector<Node *> makeLeaves(vector<Point> P) {
+    vector<Node*> leaves;
+    for (int i=0; i<P.size(); i++) {
+        Node *leaf = new Node;
+        leaf->p = P[i];
+        leaves.push_back(leaf);
+    }
+    return leaves;
+}
+
+Node *newNode(vector<Node *> N)
 {
     /* Crea un nodo vacío con las entradas P y devuelve un puntero a él */
     cout << "creo newNode antes del for" << endl;
     Node *T = new Node();
     cout << "se crea el nodo" << endl;
-    cout << "tamaño de P: " << P.size() << endl;
-
-    for (int i = 0; i < P.size(); i++)
-    {
-        cout << "antes de agregar nodo: " << i << endl;
-        Node *thisNode = T->nodes[i];
-        cout << "recupero el nodo" << endl;
-        thisNode->p = P[i];
-        cout << ". Se agregó nodo: " << i << endl;
-    }
+    cout << "tamaño de P: " << N.size() << endl;
+    T->nodes = N;
     cout << "después del for de newNode" << endl;
     return T;
 }

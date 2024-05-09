@@ -18,7 +18,8 @@ Node *CPalgorithm(vector<Point> P, int B)
     if (P.size() <= B)
     {
         cout << "si el tamaño de P es menor o igual que B" << endl; // si el tamaño de P es menor o igual que B
-        Node *T = newNode(P);                                       // el árbol contiene a todos los puntos
+        vector<Node *> h = makeLeaves(P);
+        Node *T = newNode(h);                                       // el árbol contiene a todos los puntos
         return T;
     }
 
