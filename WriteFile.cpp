@@ -57,10 +57,13 @@ int main()
     // Buscar cada consulta en el M-Tree
     for (int i = 0; i < Q.size(); i++)
     {
+        cout << "Buscando en la consulta " << i << endl;
         pair<vector<Point>, int> result = search(MTree, Q[i], res, accesos);
         vector<Point> points = result.first;
         int accessCount = result.second;
 
+        cout << "Accesos: " << accessCount << " ";
+        cout << "Puntos encontrados: " << points.size() << endl;
         // Escribir los resultados en el archivo
         file << Q[i].q.x << "." << Q[i].q.y << "," << accessCount << "," << points.size() << "\n";
     }
