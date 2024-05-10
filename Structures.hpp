@@ -94,36 +94,36 @@ vector<Node *> delRoot(Node *T)
 }
 
 /* Método de búsqueda */
-vector<Point> search(Node *T, query Q, vector<Point> res)
+pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos)
 {
+    accesos++;
     if (T->isLeaf())
     { // si el nodo raíz es una hoja
-        cout << "si el arbol es una hoja: " << endl;
+        // cout << "si el arbol es una hoja: " << endl;
         if (dist(T->p, Q.q) <= Q.r)
         {
             res.push_back(T->p); // se agrega p a la respuesta
-            cout << "se agrega " << T->p.x << "," << T->p.y << " a la respuesta" << endl;
-            cout << "tamaño de res1 " << res.size() << endl;
+                                 // cout << "se agrega " << T->p.x << "," << T->p.y << " a la respuesta" << endl;
         }
     }
     else
     { // si el nodo es interno
-        cout << "si el nodo es interno" << endl;
+        // cout << "si el nodo es interno" << endl;
         for (int i = 0; i < T->nodes.size(); i++)
         {
-            cout << "buscando en la entrada " << i << " si la distancia cumple" << endl;
-            // se verifica para cada entrada si dist(p,q)<=cr+r
-            cout << "verificando si " << dist(T->nodes[i]->p, Q.q) << " es menor o igual a " << T->nodes[i]->cr + Q.r << endl;
+            // cout << "buscando en la entrada " << i << " si la distancia cumple" << endl;
+            //  se verifica para cada entrada si dist(p,q)<=cr+r
+            //  cout << "verificando si " << dist(T->nodes[i]->p, Q.q) << " es menor o igual a " << T->nodes[i]->cr + Q.r << endl;
             if (dist(T->nodes[i]->p, Q.q) <= T->nodes[i]->cr + Q.r)
             {
-                cout << "busca en los hijos" << endl;
-                vector<Point> nodeResults = search(T->nodes[i], Q, res); // declare the variable "thisNode"
-                cout << "tamaño de res2 " << res.size() << endl;
-                res.assign(nodeResults.begin(), nodeResults.end()); // se buscan posibles respuestas en el hijo a
+                // cout << "busca en los hijos" << endl;
+                pair<vector<Point>, int> nodeResults = search(T->nodes[i], Q, res, accesos); // declare the variable "thisNode"
+                res.assign(nodeResults.first.begin(), nodeResults.first.end());              // se buscan posibles respuestas en el hijo a
+                accesos = nodeResults.second;
             }
         }
     }
-    return res;
+    return make_pair(res, accesos);
 }
 
 void printMtree(Node *T)

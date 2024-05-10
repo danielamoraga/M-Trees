@@ -1,6 +1,7 @@
 #include "CP-algorithm.cpp"
 #include <random>
 #include <iostream>
+#include <fstream>
 
 /*Crea 2^n puntos random*/
 vector<Point> createRandomPoints(int n)
@@ -27,39 +28,45 @@ vector<query> createRandomQueries()
     random_device rd;
     mt19937 gen(rd());
     uniform_real_distribution<double> distr(0, 1);
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 100; i++)
     { //(int i=0; i<100; i++)
         query q;
         q.q.x = distr(gen);
         q.q.y = distr(gen);
-        q.r = 0.2; // lo que retorna aprox. un 0.12% de los puntos del conjunto
+        q.r = 0.1; // lo que retorna aprox. un 0.12% de los puntos del conjunto
         Q.push_back(q);
-        cout << "Consulta " << i << ": (" << q.q.x << ", " << q.q.y << ") con radio " << q.r << endl;
+        // cout << "Consulta " << i << ": (" << q.q.x << ", " << q.q.y << ") con radio " << q.r << endl;
     }
     return Q;
 }
 
 int main()
 {
-    vector<Point> P = createRandomPoints(20); // 2^10
+    vector<Point> P = createRandomPoints(4096); // 2^10
     vector<query> Q = createRandomQueries();
     vector<Point> res; // vector que contendrá los puntos de Q contenidos en el árbol
+    int accesos = 0;
     // Crear un M-Tree con el algoritmo CP
     Node *MTree = CPalgorithm(P, 4096);
 
+    // Abrir un archivo para escribir
+    std::ofstream file;
+    file.open("resultados.csv");
+    file << "Consulta,Accesos,Puntos Encontrados\n"; // Escribir los encabezados de las columnas
+
     // Buscar cada consulta en el M-Tree
-    cout << "antes de buscar por cada consulta" << endl;
     for (int i = 0; i < Q.size(); i++)
     {
-        vector<Point> result = search(MTree, Q[i], res);
-        cout << "estoy buscando la consulta " << Q[i].q.x << "," << Q[i].q.y << "en esta cantidad de resultados " << result.size() << endl;
+        pair<vector<Point>, int> result = search(MTree, Q[i], res, accesos);
+        vector<Point> points = result.first;
+        int accessCount = result.second;
 
-        for (int k = 0; k < result.size(); k++)
-        {
-            cout << "Punto (" << result[k].x << ", " << result[k].y << ") está en la consulta " << i << endl;
-        }
-
-        if (result.size() == 0)
-            cout << "Vacío" << endl;
+        // Escribir los resultados en el archivo
+        file << Q[i].q.x << "." << Q[i].q.y << "," << accessCount << "," << points.size() << "\n";
     }
+
+    // Cerrar el archivo
+    file.close();
+
+    return 0;
 }
