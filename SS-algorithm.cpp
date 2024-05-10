@@ -93,21 +93,25 @@ tuple<Point, int, Node*> OutputHoja(vector<Point> Cin){
 
   // 1. Sea g el medoide primario de Cin. Sea r = 0. Sea C = {} (el que corresponderá al nodo hoja).
   Point g = getPrimaryMedoid(Cin);
-  int r = 0;
+  double r = 0;
   Node C;
   C.nodes = {};
 
-  // 2. Por cada p ∈ Cin: Añadimos (p, null, null) a C. Seteamos r = max(r, dist(g, p))
+  // 2. Por cada p ∈ Cin: Añadimos (p, null, null) a C.
   for (Point p : Cin){
     // Añadimos (p, null, null) a C
+    entry e = {p, NULL, NULL};
+    // C.entradas.push_back(entry);
+
     // Seteamos r = max(r, dist(g, p))
+    r = max(r, dist(g, p));
   }
 
   // 3. Guardamos el puntero a C como a
   Node* a = &C;
 
   // 4. Retornamos (g, r, a)
-  return {g, r, a};
+  return make_tuple(g, r, a);
 }
 
 /*
@@ -118,12 +122,27 @@ Input: Cmra, un conjunto de tuplas (g, r, a) retornadas por OutputHoja
 */
 tuple<Point, int, Node*> OutputInterno(vector<tuple<Point, int, Node*>> Cmra){
   // 1. Sea Cin = {g|∃(g, r, a) ∈ Cmra}. G el medoide primario de Cin. Sea R = 0. Sea C = {} (el que corresponderá a un nodo interno).
+  vector<Point> Cin;
+  for(auto& tpl : Cmra) {
+      Cin.push_back(get<0>(tpl));
+  }
+  Point G = getPrimaryMedoid(Cin);
+  double R = 0;
+  Node* C = new Node();
 
   // 2. Por cada (g, r, a) ∈ Cmra: Añadir (g, r, a) a C. Se setea R = max(R, dist(G, g) + r)
-
+  for(auto& tpl : Cmra) {
+    Point g = get<0>(tpl);
+    double r = get<1>(tpl);
+    Node* a = get<2>(tpl);
+    C->nodes.push_back(a); // Agregar el hijo al nodo interno
+    R = max(R, dist(G, g) + r);
+  }
   // 3. Guardamos el puntero a C como A.
+  Node* A = C;
 
   // 4. Retornamos (G, R, A)
+  return make_tuple(G, R, A);
 
 }
 
@@ -133,6 +152,7 @@ AlgoritmoSS: retorna la raíz del M-tree construído.
 Input: Cin, un conjunto de puntos
 */
 Node* SSAlgorithm(vector<Point> Cin, int B){
+
   // 1. Si |Cin| ≤ B: Se define (g, r, a) = OutputHoja(Cin) y se retorna a
   if (Cin.size() <= B){
     tuple<Point, int, Node*> g_r_a =  OutputHoja(Cin);
@@ -142,7 +162,7 @@ Node* SSAlgorithm(vector<Point> Cin, int B){
 
   // 2. Sea Cout = Cluster(Cin). Sea C = {}.
   vector<ClusterT> Cout = Cluster(Cin, B);
-  vector<tuple<Point, int, Node*>> C = {};
+  vector<tuple<Point, int, Node*>> C;
 
   // 3. Por cada c ∈ Cout: Se añade OutputHoja(c) a C
   for (ClusterT c: Cout){
@@ -152,8 +172,24 @@ Node* SSAlgorithm(vector<Point> Cin, int B){
   // 4. Mientras |C| > B:
   while (C.size() > B){
     // 4.1 Sea Cin = {g|(g, r, a) ∈ C}. Sea Cout = Cluster(Cin). Sea Cmra = {}
+    vector<Point> Cin;
+    for(auto& tpl : C) {
+        Cin.push_back(get<0>(tpl));
+    }
+    vector<ClusterT> Cout = Cluster(Cin, B);
+    vector<tuple<Point, int, Node*>> Cmra;
 
     // 4.2 Por cada c ∈ Cout: Sea s = {(g, r, a)|(g, r, a) ∈ C ∧ g ∈ c}, se añade s a Cmra
+    for (ClusterT c: Cout){
+      vector<tuple<Point, int, Node*>> s;
+      for(auto& tpl : C) {
+        Point g = get<0>(tpl);
+        if (find(c.points.begin(), c.points.end(), g) != c.points.end()) {
+          s.push_back(tpl);
+        }
+      }
+      Cmra.insert(Cmra.end(), s.begin(), s.end());
+    }
 
     // 4.3 Sea C = {}.
 
