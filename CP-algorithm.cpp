@@ -17,8 +17,7 @@ Node *CPalgorithm(vector<Point> P, int B)
 
     if (P.size() <= B)
     {
-        vector<Node *> h = makeLeaves(P);
-        Node *T = newNode(h); // el árbol contiene a todos los puntos
+        Node *T = newNode(P);
         return T;
     }
 
@@ -33,19 +32,23 @@ Node *CPalgorithm(vector<Point> P, int B)
         Node *Tj = CPalgorithm(Fk[j], B);
         Tk.push_back(Tj);
 
-        if (Tj->nodes.size() < b)
+        if (Tj->entries.size() < b)
         {                                          // si la raíz de Tj es de tamaño menor a b
             vector<Node *> Tj_nodes = delRoot(Tj); // se quita esa raíz
             F.erase(F.begin() + j);                // se elimina pfj de F
             for (int i = 0; i < Tj_nodes.size(); i++)
             {
                 Tk.push_back(Tj_nodes[i]); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                F.push_back(Tj[i].p);      // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
+                for (int k=0; k<Tj[i].entries.size(); k++)
+                    F.push_back(Tj[i].entries[k].p);      // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
             }
         }
     }
 
-    vector<Node *> M = balancing(Tk, F);
+    vector<Node *> M;
+    int h = minHeight(Tk); // altura mínima de de los árboles Tj
+    for (int i = 0; i < Tk.size(); i++)
+        balancing(Tk[i], F, M, h, i);
 
     // se define Tsup como el resultado de la llamada al algoritmo CP aplicado a F
     Node *Tsup = CPalgorithm(F, B);
@@ -53,14 +56,14 @@ Node *CPalgorithm(vector<Point> P, int B)
     // se une cada Tj en M a su hoja en Tsup correspondiente al punto pfj en F, obteniendo un nuevo árbol T
     for (int j = 0; j < M.size(); j++)
     {
-        // Buscar el punto pfj en F
+        // Punto pfj en F
         Point pfj = F[j];
         // Buscar la hoja correspondiente en Tsup
-        for (int i = 0; i < Tsup->nodes.size(); i++)
+        for (int i = 0; i < Tsup->entries.size(); i++)
         {
-            if (Tsup->nodes[i]->p == pfj)
+            if (Tsup->entries[i].p == pfj)
             {
-                Tsup->nodes[i]->nodes.push_back(M[j]); // Unir Tj a la hoja encontrada en Tsup
+                Tsup->entries[i].a.reset(M[j]); // Reinicializa el shared_ptr para que apunte a M[j]
                 break;
             }
             else

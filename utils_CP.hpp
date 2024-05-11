@@ -1,23 +1,14 @@
 #include "Structures.hpp"
 
-vector<Node *> makeLeaves(vector<Point> P)
+Node* newNode(vector<Point> P)
 {
-    vector<Node *> leaves;
+    Node* root = new Node();
     for (int i = 0; i < P.size(); i++)
     {
-        Node *leaf = new Node;
-        leaf->p = P[i];
-        leaves.push_back(leaf);
+        entry entry(P[i]);
+        root->entries.push_back(entry);
     }
-    return leaves;
-}
-
-Node *newNode(vector<Node *> N)
-{
-    /* Crea un nodo vacío con las entradas P y devuelve un puntero a él */
-    Node *T = new Node();
-    T->nodes = N;
-    return T;
+    return root;
 }
 
 /*  Paso 2:
@@ -121,36 +112,31 @@ int minHeight(vector<Node *> Tk)
     return h_min;
 }
 // balancea el árbol y modifica F
-vector<Node *> balancing(vector<Node *> Tk, vector<Point> F)
-{
-    int h = minHeight(Tk); // altura mínima de de los árboles Tj
-    vector<Node *> M;      // conjunto inicialmente vacío
-    for (int i = 0; i < Tk.size(); i++)
-    {                             // por cada Tj,
-        if (Tk[i]->height() == h) // si su altura es igual a h
-            M.push_back(Tk[i]);   // se añade a M
-        else
-        {                           // sino
-            F.erase(F.begin() + i); // se borra el punto pertinente en F
-            // se hace una búsqueda exhaustiva en Tj de todos sus subárboles de altura igual a h y se insertan en M
-            // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
-            for (int j = 0; j < Tk[i]->nodes.size(); j++)
-            {
-                balancing(Tk[i]->nodes, F);
-            }
+void balancing(Node *Tk, vector<Point> F, vector<Node *> M, int h, int i)
+{   
+    if (Tk->height() == h) // si su altura es igual a h
+        M.push_back(Tk);   // se añade a M
+    else
+    {                           // sino
+        F.erase(F.begin() + i); // se borra el punto pertinente en F
+        // se hace una búsqueda exhaustiva en Tj de todos sus subárboles de altura igual a h y se insertan en M
+        // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
+        for (int j = 0; j < Tk->entries.size(); j++)
+        {
+            for (int k = 0; k<Tk->entries.size(); j++)
+                balancing(Tk->entries[k].a.get(), F, M, h, i);
         }
     }
-    return M;
 }
 
 /*Paso 10*/
 void searchPoint(Node *T, Point p, Node *M)
 {
-    for (int i = 0; i < T->nodes.size(); i++)
+    for (int i = 0; i < T->entries.size(); i++)
     {
-        Node *thisNode = T->nodes[i];
-        if (thisNode->p == p)
-            T->nodes[i]->nodes.push_back(M);
+        entry thisEntry = T->entries[i];
+        if (thisEntry.p == p)
+            T->entries[i].a.reset(M);
         else
             continue;
     }
@@ -160,18 +146,22 @@ void searchPoint(Node *T, Point p, Node *M)
     Calcula el radio cobertor de cada punto en un árbol */
 void setCR(Node *T)
 {
+    if (T == nullptr);
     double max_distance = 0.0;
-    for (int i = 0; i < T->nodes.size(); i++)
+    for (int i = 0; i < T->entries.size(); i++)
     {
-        double distance = dist(T->p, T->nodes[i]->p);
-        if (distance > max_distance)
+        for (int j = T->entries.size(); j = 0; j--)
         {
-            max_distance = distance;
+            double distance = dist(T->entries[i].p, T->entries[j].p);
+            if (distance > max_distance)
+            {
+                max_distance = distance;
+            }
         }
+        T->entries[i].cr = max_distance;
     }
-    T->cr = max_distance;
-    for (int i = 0; i < T->nodes.size(); i++)
+    for (int i = 0; i < T->entries.size(); i++)
     {
-        setCR(T->nodes[i]);
+        setCR(T->entries[i].a.get());
     }
 }
