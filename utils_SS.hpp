@@ -28,12 +28,19 @@ pair<ClusterT, ClusterT> closestPair(vector<ClusterT> C){
 /*
 Añade el cluster c al vector de clusters C
 */
-void clusterAdd(ClusterT c, vector<ClusterT>& C){}
+void clusterAdd(ClusterT c, vector<ClusterT>& C){
+  C.push_back(c);
+}
 
 /*
 Remueve el cluster c del vector de clusters C
 */
-void clusterRemove(ClusterT c, vector<ClusterT>& C){}
+void clusterRemove(ClusterT c, vector<ClusterT>& C){
+  auto it = find(C.begin(), C.end(), c);
+  if (it != C.end()) {
+    C.erase(it);
+  }
+}
 
 /*
 Divide un cluster usando MinMax split policy.
