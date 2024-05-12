@@ -2,6 +2,7 @@
 #include <random>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 /*Crea 2^n puntos random*/
 vector<Point> createRandomPoints(int n)
@@ -29,7 +30,7 @@ vector<query> createRandomQueries()
     mt19937 gen(rd());
     uniform_real_distribution<double> distr(0, 1);
     for (int i = 0; i < 100; i++)
-    { //(int i=0; i<100; i++)
+    {
         query q;
         q.q.x = distr(gen);
         q.q.y = distr(gen);
@@ -52,20 +53,35 @@ int main()
     // Abrir un archivo para escribir
     std::ofstream file;
     file.open("resultados.csv");
-    file << "Consulta,Accesos,Puntos Encontrados\n"; // Escribir los encabezados de las columnas
+    file << "Consulta,Accesos,PuntosEncontrados,Tiempo\n"; // Escribir los encabezados de las columnas
 
     // Buscar cada consulta en el M-Tree
     for (int i = 0; i < Q.size(); i++)
     {
         cout << "Buscando en la consulta " << i << endl;
+
+        // Inicio del tiempo
+        auto start = std::chrono::high_resolution_clock::now();
+
+        // Buscar la consulta en el M-Tree
         pair<vector<Point>, int> result = search(MTree, Q[i], res, accesos);
+
+        // Fin del tiempo
+        auto finish = std::chrono::high_resolution_clock::now();
+
+        // Calcular el tiempo transcurrido
+        std::chrono::duration<double> duration = finish - start;
+
+        // Mostrar los resultados
         vector<Point> points = result.first;
         int accessCount = result.second;
 
         cout << "Accesos: " << accessCount << " ";
         cout << "Puntos encontrados: " << points.size() << endl;
+        cout << "Tiempo transcurrido: " << duration.count() << "s" << endl;
+
         // Escribir los resultados en el archivo
-        file << Q[i].q.x << "." << Q[i].q.y << "," << accessCount << "," << points.size() << "\n";
+        file << Q[i].q.x << "." << Q[i].q.y << "," << accessCount << "," << points.size() << "," << duration.count() << "\n";
     }
 
     // Cerrar el archivo
