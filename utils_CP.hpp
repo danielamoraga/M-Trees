@@ -1,5 +1,7 @@
 #include "Structures.hpp"
 
+/*  Paso 1:
+    Se crea un árbol T, se insertan todos los puntos en este y se retorna el árbol */
 Node* newNode(vector<Point> P)
 {
     Node* root = new Node();
@@ -13,14 +15,13 @@ Node* newNode(vector<Point> P)
 
 /*  Paso 2:
     Elige k puntos aleatorios de P que inserta en un conjunto F*/
-void k_samples(vector<Point> P, int k, int n, int B, vector<Point> F)
+void k_samples(vector<Point> P, int k, int B, vector<Point> F)
 {
     F.clear(); // vacía F para generarlo de nuevo
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<int> distr(0, n);
-    int K = min(B, (int)ceil(n / B));
-    for (int i = 0; i < K; i++)
+    uniform_int_distribution<int> distr(0, P.size());
+    for (int i = 0; i < k; i++)
     { // creamos k=min(B,n/B) samples de manera aleatoria
         Point pf;
         int random_index = distr(gen);
@@ -85,9 +86,8 @@ void redistribution(vector<vector<Point>> Fk, vector<Point> F, double b, int k)
 vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Point> F)
 {
     int n = P.size();
-    int k = ceil(n / B);
-    int K = min(B, k);
-    k_samples(P, K, n, B, F);                     // step 2
+    int k = min(B, (int)ceil(n / B));
+    k_samples(P, k, B, F);                     // step 2
     vector<vector<Point>> Fk = assignation(P, F); // step 3
     redistribution(Fk, F, b, k);                  // step 4
     if (F.size() == 1)
