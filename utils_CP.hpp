@@ -2,9 +2,9 @@
 
 /*  Paso 1:
     Se crea un árbol T, se insertan todos los puntos en este y se retorna el árbol */
-Node* newNode(vector<Point> P)
+Node *newNode(vector<Point> P)
 {
-    Node* root = new Node();
+    Node *root = new Node();
     for (int i = 0; i < P.size(); i++)
     {
         entry entry(P[i]);
@@ -15,7 +15,7 @@ Node* newNode(vector<Point> P)
 
 /*  Paso 2:
     Elige k puntos aleatorios de P que inserta en un conjunto F*/
-void k_samples(vector<Point> P, int k, int B, vector<Point> F)
+vector<Point> k_samples(vector<Point> P, int k, int B, vector<Point> F)
 {
     F.clear(); // vacía F para generarlo de nuevo
     random_device rd;
@@ -27,8 +27,10 @@ void k_samples(vector<Point> P, int k, int B, vector<Point> F)
         int random_index = distr(gen);
         pf.x = P[random_index].x;
         pf.y = P[random_index].y;
+        cout << "insertar (" << pf.x << "," << pf.y << ") en F" << endl;
         F.push_back(pf); // vamos insertando los samples en F
     }
+    return F;
 }
 
 /*  Paso 3:
@@ -36,8 +38,9 @@ void k_samples(vector<Point> P, int k, int B, vector<Point> F)
     (crea Fk) */
 // Modifica Fk haciendo que sea un conjunto de k conjuntos de puntos
 // donde  Fk[k] contiene todos los p que tienen a F[k] como más cercano
-void closest(vector<Point> P, vector<Point> F, vector<vector<Point>> Fk)
+vector<vector<Point>> closest(vector<Point> P, vector<Point> F, vector<vector<Point>> Fk)
 {
+    cout << "tamaño de F: " << F.size() << endl;
     for (int i = 0; i < P.size(); i++)
     {
         double distance = dist(P[i], F[0]);
@@ -52,14 +55,21 @@ void closest(vector<Point> P, vector<Point> F, vector<vector<Point>> Fk)
                 indexClosest = k;
             }
         }
+        cout << "el punto más cercano a (" << P[i].x << "," << P[i].y << ") es: (" << closest.x << "," << closest.y << ")." << endl;
         Fk[indexClosest].push_back(P[i]);
+        cout << "agregamos (" << P[i].x << "," << P[i].y << ") a Fk." << endl;
     }
+    return Fk;
 }
 // asignación de los puntos
 vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
 {
-    vector<vector<Point>> Fk; // conjunto de los conjuntos de pares (p_i, f_k)
-    closest(P, F, Fk);
+    cout << "F: ";
+    for (int i = 0; i < F.size(); i++)
+        cout << "(" << F[i].x << "," << F[i].y << ")" << ", ";
+    cout << endl;
+    vector<vector<Point>> Fk = closest(P, F, Fk); // conjunto de los conjuntos de pares (p_i, f_k)
+    cout << "se crea Fk" << endl;
     return Fk;
 }
 
@@ -87,9 +97,11 @@ vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Poin
 {
     int n = P.size();
     int k = min(B, (int)ceil(n / B));
-    k_samples(P, k, B, F);                     // step 2
-    vector<vector<Point>> Fk = assignation(P, F); // step 3
-    redistribution(Fk, F, b, k);                  // step 4
+    cout << "k = " << k << endl;
+    vector<Point> G = k_samples(P, k, B, F);      // step 2
+    vector<vector<Point>> Fk = assignation(P, G); // step 3
+    cout << "se hace la asignación Fk" << endl;
+    redistribution(Fk, F, b, k); // step 4
     if (F.size() == 1)
     { // step 5
         return steps_2_to_5(P, b, B, F);
@@ -113,7 +125,7 @@ int minHeight(vector<Node *> Tk)
 }
 // balancea el árbol y modifica F
 void balancing(Node *Tk, vector<Point> F, vector<Node *> M, int h, int i)
-{   
+{
     if (Tk->height() == h) // si su altura es igual a h
         M.push_back(Tk);   // se añade a M
     else
@@ -123,7 +135,7 @@ void balancing(Node *Tk, vector<Point> F, vector<Node *> M, int h, int i)
         // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
         for (int j = 0; j < Tk->entries.size(); j++)
         {
-            for (int k = 0; k<Tk->entries.size(); j++)
+            for (int k = 0; k < Tk->entries.size(); j++)
                 balancing(Tk->entries[k].a.get(), F, M, h, i);
         }
     }
@@ -146,7 +158,8 @@ void searchPoint(Node *T, Point p, Node *M)
     Calcula el radio cobertor de cada punto en un árbol */
 void setCR(Node *T)
 {
-    if (T == nullptr);
+    if (T == nullptr)
+        ;
     double max_distance = 0.0;
     for (int i = 0; i < T->entries.size(); i++)
     {

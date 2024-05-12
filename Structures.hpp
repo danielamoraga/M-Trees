@@ -24,7 +24,7 @@ struct entry
     Point p;            // punto
     double cr;          // radio cobertor: máxima distancia entre p y cualquier punto del árbol
     shared_ptr<Node> a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
-    entry(const Point &point, double coveringradio = NULL, const shared_ptr<Node> &nodes = nullptr) : p(point), cr(coveringradio), a(nodes) {}
+    entry(const Point &point, double coveringradio = 0.0, const shared_ptr<Node> &nodes = nullptr) : p(point), cr(coveringradio), a(nodes) {}
 };
 
 struct Node
@@ -62,7 +62,7 @@ struct Node
         bool isLeaf = false;
         for (int i = 0; i < entries.size(); i++)
         {
-            if (entries[i].a == nullptr && entries[i].cr == NULL)
+            if (entries[i].a == nullptr && entries[i].cr == 0.0)
             {
                 isLeaf = true;
             }

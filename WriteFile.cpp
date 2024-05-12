@@ -12,7 +12,7 @@ vector<Point> createRandomPoints(int n)
     mt19937 gen(rd());
     uniform_real_distribution<double> distr(0, 1);
     for (int i = 0; i < n; i++)
-    { // int i=0; i<pow(2,n); i++
+    {
         Point p;
         p.x = distr(gen);
         p.y = distr(gen);
@@ -48,7 +48,7 @@ int main()
     vector<Point> res; // vector que contendrá los puntos de Q contenidos en el árbol
     int accesos = 0;
     // Crear un M-Tree con el algoritmo CP
-    Node *MTree = CPalgorithm(P, 4096);
+    Node *MTree = CPalgorithm(P, 1024);
 
     // Abrir un archivo para escribir
     std::ofstream file;
@@ -81,7 +81,7 @@ int main()
         cout << "Tiempo transcurrido: " << duration.count() << "s" << endl;
 
         // Escribir los resultados en el archivo
-        file << Q[i].q.x << "." << Q[i].q.y << "," << accessCount << "," << points.size() << "," << duration.count() << "\n";
+        file << i << "," << accessCount << "," << points.size() << "," << duration.count() << "\n";
     }
 
     // Cerrar el archivo

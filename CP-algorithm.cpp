@@ -24,6 +24,7 @@ Node *CPalgorithm(vector<Point> P, int B)
     vector<Point> F; // conjunto de samples
 
     vector<vector<Point>> Fk = steps_2_to_5(P, b, B, F); // crea el conjunto de conjuntos Fk y modifica F
+    cout << "se crea conjunto de conjuntos de samples Fk" << endl;
 
     // se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
     vector<Node *> Tk;
@@ -39,8 +40,8 @@ Node *CPalgorithm(vector<Point> P, int B)
             for (int i = 0; i < Tj_nodes.size(); i++)
             {
                 Tk.push_back(Tj_nodes[i]); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                for (int k=0; k<Tj[i].entries.size(); k++)
-                    F.push_back(Tj[i].entries[k].p);      // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
+                for (int k = 0; k < Tj[i].entries.size(); k++)
+                    F.push_back(Tj[i].entries[k].p); // se añaden los puntos pertinentes a F (p de la entrada del nodo asumiendo que solo tiene una entrada)
             }
         }
     }
