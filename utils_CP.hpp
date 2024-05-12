@@ -40,6 +40,8 @@ vector<Point> k_samples(vector<Point> P, int k, int B, vector<Point> F)
 // donde  Fk[k] contiene todos los p que tienen a F[k] como más cercano
 vector<vector<Point>> closest(vector<Point> P, vector<Point> F, vector<vector<Point>> Fk)
 {
+    cout << "reasignamos tamaño a Fk" << endl;
+    Fk.resize(F.size());
     cout << "tamaño de F: " << F.size() << endl;
     for (int i = 0; i < P.size(); i++)
     {
@@ -68,7 +70,8 @@ vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
     for (int i = 0; i < F.size(); i++)
         cout << "(" << F[i].x << "," << F[i].y << ")" << ", ";
     cout << endl;
-    vector<vector<Point>> Fk = closest(P, F, Fk); // conjunto de los conjuntos de pares (p_i, f_k)
+    vector<vector<Point>> Sk;
+    vector<vector<Point>> Fk = closest(P, F, Sk); // conjunto de los conjuntos de pares (p_i, f_k)
     cout << "se crea Fk" << endl;
     return Fk;
 }
