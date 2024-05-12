@@ -1,6 +1,6 @@
 # M-Trees
 
-Descripción general del proyecto.
+Este proyecto realiza un experimento para recopilar evidencias empíricas sobre las diferencias de costo al realizar una búsqueda en un M-Tree. El experimento, implementado en [`WriteFile.cpp`](WriteFile.cpp), genera un conjunto de puntos y consultas aleatorias. Luego, construye un M-Tree utilizando el algoritmo Ciaccia-Patella y realiza las consultas en el árbol. Los resultados, que incluyen el número de accesos al árbol y los puntos encontrados para cada consulta, se escriben en un archivo CSV. El objetivo es comparar el rendimiento de los M-Trees construidos con los algoritmos Ciaccia-Patella y Sexton-Swinbank.
 
 ## Requisitos
 
@@ -11,10 +11,14 @@ Descripción general del proyecto.
 
 Descripción de los archivos principales y su función.
 
-- `CP-algorithm.cpp`: Descripción de este archivo.
-- `SS-algorithm.cpp`: Descripción de este archivo.
-- `WriteFile.cpp`: Descripción de este archivo.
-- `Makefile`: Archivo para compilar y ejecutar el proyecto.
+- `CP-algorithm.cpp`: Este archivo implementa el algoritmo Ciaccia-Patella para realizar clustering de puntos y obtener un M-tree balanceado. Puedes ejecutar este algoritmo con el comando make runCP.
+- `SS-algorithm.cpp`: Este archivo implementa el algoritmo SS, que también realiza clustering de puntos y genera un M-tree. Puedes ejecutar este algoritmo con el comando make runSS.
+- `WriteFile.cpp`: Este archivo es responsable de escribir los resultados de la experimentación con los algoritmos en un archivo CSV. Puedes ejecutar este archivo con el comando make runWF.
+
+- `Structures.hpp`: Este archivo define las estructuras de datos utilizadas en el proyecto, incluyendo `Point`, `entry`, `Node` y `query`. `Point` representa un punto en el espacio, `entry` es una entrada en un nodo del M-Tree, `Node` representa un nodo en el M-Tree, y `query` representa una consulta de búsqueda en el árbol. También se definen varias funciones auxiliares para operaciones como la distancia euclidiana entre dos puntos y la búsqueda en el árbol.
+
+- `utils_CP.hpp` y `utils_SS.hpp`: Estos archivos contienen funciones auxiliares utilizadas por los algoritmos Ciaccia-Patella (`CP-algorithm.cpp`) y Sexton-Swinbank (`SS-algorithm.cpp`) respectivamente. Estas funciones ayudan a implementar los algoritmos de manera más eficiente y legible.
+- `Makefile`: Este archivo contiene las instrucciones para compilar y ejecutar los algoritmos y el experimento. Utiliza los comandos make runCP, make runSS, y make runWF para ejecutar cada parte del proyecto.
 
 ## Compilación y Ejecución
 
