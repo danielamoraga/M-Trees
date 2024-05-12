@@ -29,9 +29,14 @@ struct entry
 
 struct Node
 {
-    vector<entry> entries;
-
+    vector<entry> entries; // entradas que componen el nodo
+    double B;              // capacidad de entradas en disco del nodo
     Node(){};
+
+    int size()
+    {
+        return entries.size() * B;
+    }
 
     int height()
     {
