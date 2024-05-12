@@ -17,7 +17,10 @@ Descripción de los archivos principales y su función.
 
 - `Structures.hpp`: Este archivo define las estructuras de datos utilizadas en el proyecto, incluyendo `Point`, `entry`, `Node` y `query`. `Point` representa un punto en el espacio, `entry` es una entrada en un nodo del M-Tree, `Node` representa un nodo en el M-Tree, y `query` representa una consulta de búsqueda en el árbol. También se definen varias funciones auxiliares para operaciones como la distancia euclidiana entre dos puntos y la búsqueda en el árbol.
 
+- `Cluster.hpp`: Este archivo define la clase `ClusterT`, que representa un cluster de puntos. Un cluster tiene un conjunto de puntos, un radio y un medoide. La clase `ClusterT` también proporciona métodos para obtener la cardinalidad del cluster y para unir dos clusters en uno nuevo.
+
 - `utils_CP.hpp` y `utils_SS.hpp`: Estos archivos contienen funciones auxiliares utilizadas por los algoritmos Ciaccia-Patella (`CP-algorithm.cpp`) y Sexton-Swinbank (`SS-algorithm.cpp`) respectivamente. Estas funciones ayudan a implementar los algoritmos de manera más eficiente y legible.
+
 - `Makefile`: Este archivo contiene las instrucciones para compilar y ejecutar los algoritmos y el experimento. Utiliza los comandos make runCP, make runSS, y make runWF para ejecutar cada parte del proyecto.
 
 ## Compilación y Ejecución
