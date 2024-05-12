@@ -3,31 +3,38 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
+#include <string>
 
 using namespace std;
 
 /* ESTRUCTURAS */
 
+struct Node;
+
 /* Estructura que define un punto */
-struct Point {
+struct Point
+{
     double x;
     double y;
 };
 
-struct entry {
+struct entry
+{
     /* Estructura para las entradas que pueden haber en un nodo */
-    Point p;              // punto
-    double cr;            // radio cobertor: máxima distancia entre p y cualquier punto del árbol
-    shared_ptr<Node> a;              // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
-    entry(const Point& point, double coveringradio = NULL, const shared_ptr<Node>& nodes = nullptr) : p(point), cr(coveringradio), a(nodes) {}
+    Point p;            // punto
+    double cr;          // radio cobertor: máxima distancia entre p y cualquier punto del árbol
+    shared_ptr<Node> a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
+    entry(const Point &point, double coveringradio = NULL, const shared_ptr<Node> &nodes = nullptr) : p(point), cr(coveringradio), a(nodes) {}
 };
 
-struct Node {
+struct Node
+{
     vector<entry> entries;
 
-    Node() {};
+    Node(){};
 
-    int height() {
+    int height()
+    {
         int h;
         if (this == nullptr)
             return 0; // árbol vacío
@@ -38,7 +45,7 @@ struct Node {
             int max_child_h = 0;
             for (int i = 0; i < entries.size(); i++)
             {
-                max_child_h = max(max_child_h, entries[i].a->height());
+                max_child_h = max(max_child_h, entries[i].a.get()->height());
                 h = max_child_h + 1;
             }
         }
@@ -48,7 +55,8 @@ struct Node {
     bool isLeaf()
     {
         bool isLeaf = false;
-        for (int i=0; i<entries.size(); i++) {
+        for (int i = 0; i < entries.size(); i++)
+        {
             if (entries[i].a == nullptr && entries[i].cr == NULL)
             {
                 isLeaf = true;
@@ -79,9 +87,9 @@ double dist(Point p, Point q)
 }
 
 /* Método para eliminar la raíz de un árbol */
-vector<Node*> delRoot(Node* T)
+vector<Node *> delRoot(Node *T)
 {
-    vector<Node*> c; // hijos de T
+    vector<Node *> c; // hijos de T
     for (int i = 0; i < T->entries.size(); i++)
         c.push_back(T->entries[i].a.get());
     T->entries.clear();
@@ -90,13 +98,13 @@ vector<Node*> delRoot(Node* T)
 }
 
 /* Método de búsqueda */
-pair<vector<Point>, int> search(Node* T, query Q, vector<Point> res, int accesos)
+pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos)
 {
     accesos++;
     if (T->isLeaf())
     { // si el nodo raíz es una hoja
         // cout << "si el arbol es una hoja: " << endl;
-        for (int i=0; i<T->entries.size(); i++)
+        for (int i = 0; i < T->entries.size(); i++)
             if (dist(T->entries[i].p, Q.q) <= Q.r)
             {
                 res.push_back(T->entries[i].p); // se agrega p a la respuesta
@@ -115,7 +123,7 @@ pair<vector<Point>, int> search(Node* T, query Q, vector<Point> res, int accesos
             {
                 // cout << "busca en los hijos" << endl;
                 pair<vector<Point>, int> nodeResults = search(T->entries[i].a.get(), Q, res, accesos); // declare the variable "thisNode"
-                res.assign(nodeResults.first.begin(), nodeResults.first.end());              // se buscan posibles respuestas en el hijo a
+                res.assign(nodeResults.first.begin(), nodeResults.first.end());                        // se buscan posibles respuestas en el hijo a
                 accesos = nodeResults.second;
             }
         }
