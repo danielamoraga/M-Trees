@@ -82,7 +82,7 @@ Node *CPalgorithm(vector<Point> P, int B)
         {
             if (Tsup->entries[i].p == pfj)
             {
-                Tsup->entries[i].a.reset(M[j]); // Reinicializa el shared_ptr para que apunte a M[j]
+                Tsup->entries[i].a = M[j]; // Reinicializa el shared_ptr para que apunte a M[j]
                 break;
             }
             else
