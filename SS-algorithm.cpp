@@ -16,9 +16,7 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
 
   // 2. Por cada punto p ∈ Cin se añade {p} a C.
   for (Point p : Cin){
-    ClusterT singleton;
-    singleton.points = {p};
-    singleton.medoid = p;
+    ClusterT singleton({p});
     clusterAdd(singleton, C);
   }
 
@@ -57,11 +55,6 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
     clusterRemove(c_p, Cout);
   }
 
-  // 5.2 Si no, se define c′ = {}.
-  else{
-    c_p = {};
-  }
-
   // 6. Si |c ∪ c′| ≤ B:
   ClusterT c_u_cp = c.cUnion(c_p);
   if (c_u_cp.getCardinality() <= B){
@@ -87,24 +80,23 @@ OutputHoja: Retorna tupla (g, r, a) donde g es el medoide primario de Cin, r es 
 Input: Cin
 */
 entry OutputHoja(vector<Point> Cin){
-
   // 1. Sea g el medoide primario de Cin. Sea r = 0. Sea C = {} (el que corresponderá al nodo hoja).
   Point g = getPrimaryMedoid(Cin);
   double r = 0;
-  Node C =  Node();
+  Node* C = new Node();
 
   // 2. Por cada p ∈ Cin: Añadimos (p, null, null) a C.
   for (Point p : Cin){
     // Añadimos (p, null, null) a C
     entry e(p);
-    C.entries.push_back(e);
+    C->entries.push_back(e);
 
     // Seteamos r = max(r, dist(g, p))
     r = max(r, dist(g, p));
   }
 
   // 3. Guardamos el puntero a C como a
-  shared_ptr<Node> a(&C);
+  Node* a = C;
 
   // 4. Retornamos (g, r, a)
   entry ret(g,r,a);
@@ -125,19 +117,19 @@ entry OutputInterno(vector<entry> Cmra){
   }
   Point G = getPrimaryMedoid(Cin);
   double R = 0;
-  Node C = Node();
+  Node *C = new Node();
 
   // 2. Por cada (g, r, a) ∈ Cmra: Añadir (g, r, a) a C. Se setea R = max(R, dist(G, g) + r)
   for(entry ent : Cmra) {
     Point g = ent.p;
     double r = ent.cr;
-    shared_ptr<Node> a = ent.a;
+    Node* a = ent.a;
     entry e(g, r, a);
     R = max(R, dist(G, g) + r);
   }
 
   // 3. Guardamos el puntero a C como A.
-  shared_ptr<Node> A(&C);
+  Node* A = C;
 
   // 4. Retornamos (G, R, A)
   entry ret(G, R, A);
@@ -150,25 +142,32 @@ AlgoritmoSS: retorna la raíz del M-tree construído.
 
 Input: Cin, un conjunto de puntos
 */
-shared_ptr<Node> SSAlgorithm(vector<Point> Cin, int B){
+Node* SSAlgorithm(vector<Point> Cin, int B){
+  cout << "size Cin " << Cin.size() << endl;
+
 
   // 1. Si |Cin| ≤ B: Se define (g, r, a) = OutputHoja(Cin) y se retorna a
   if (Cin.size() <= B){
     entry g_r_a =  OutputHoja(Cin);
-    shared_ptr<Node> a = g_r_a.a;
+    Node* a = g_r_a.a;
     return a;
   }
 
   // 2. Sea Cout = Cluster(Cin). Sea C = {}.
+  cout << "SSA - Paso 2" << endl;
   vector<ClusterT> Cout = Cluster(Cin, B);
   vector<entry> C;
+  cout << "size Cout " << Cout.size() << endl;
 
   // 3. Por cada c ∈ Cout: Se añade OutputHoja(c) a C
+  cout << "SSA - Paso 3" << endl;
   for (ClusterT c: Cout){
-    C.push_back(OutputHoja(c.points));
+    C.push_back(OutputHoja(c.getPoints()));
   }
+  cout << "size C " << C.size() << endl;
 
   // 4. Mientras |C| > B:
+  cout << "SSA - Paso 4" << endl;
   while (C.size() > B){
     // 4.1 Sea Cin = {g|(g, r, a) ∈ C}. Sea Cout = Cluster(Cin). Sea Cmra = {}
     for(entry ent : C) {
@@ -182,11 +181,12 @@ shared_ptr<Node> SSAlgorithm(vector<Point> Cin, int B){
       vector<entry> s;
       for(entry ent : C) {
         Point g = ent.p;
-        if (find(c.points.begin(), c.points.end(), g) != c.points.end()) {
+        vector<Point> c_points = c.getPoints();
+        if (find(c_points.begin(), c_points.end(), g) != c_points.end()) {
           s.push_back(ent.p);
         }
       }
-      Cmra.insert(Cmra.end(), s.begin(), s.end());
+      Cmra.push_back(s);
     }
 
     // 4.3 Sea C = {}.
@@ -199,9 +199,11 @@ shared_ptr<Node> SSAlgorithm(vector<Point> Cin, int B){
   }
 
   // 5. Sea (g, r, a) = OutputInterno(C)
+  cout << "SSA - Paso 5" << endl;
   entry g_r_a = OutputInterno(C);
 
   // 6. Se retorna a
+  cout << "SSA - Paso 6" << endl;
   return g_r_a.a;
 }
 
