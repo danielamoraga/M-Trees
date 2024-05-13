@@ -1,16 +1,145 @@
 #include "Structures.hpp"
 
 class ClusterT {
-  public:
+  private:
     vector<Point> points;
-    int radius;
+    double radius;
     Point medoid;
+
+  public:
+    ClusterT(){
+      this->points = {};
+      this->radius = 0;
+    }
+
+    ClusterT(vector<Point> points){
+      this->setPoints(points);
+      this->computeMedoid();
+      this->computeRadius();
+    }
+
+    vector<Point> getPoints() const {
+        return points;
+    }
+
+    Point getMedoid() const {
+        return medoid;
+    }
+
+    double getRadius() const {
+        return radius;
+    }
+
+    /*
+    Retorna el vector de puntos de este cluster.
+    */
+    vector<Point> getPoints(){
+      return this->points;
+    }
+
+    /*
+    Setter para vector de puntos.
+    */
+    void setPoints(vector<Point> v){
+      this->points = v;
+    }
+
+    /*
+    Retorna el radio cobertor de este cluster.
+    */
+    double getRadius(){
+      return this->radius;
+    }
+
+    /*
+    Setter para el radio cobertor.
+    */
+    void setRadius(double r){
+      this->radius = r;
+    }
+
+    /*
+    Retorna el medoide de este cluster.
+    */
+    Point getMedoid(){
+      return this->medoid;
+    }
+
+    /*
+    Setter para el medoide.
+    */
+    void setMedoid(Point p){
+      this->medoid = p;
+    }
+
 
     /*
     Retorna la cantidad de elementos (cardinalidad) de este cluster.
     */
     int getCardinality(){
-      return points.size();
+      return this->points.size();
+    }
+
+    /*
+    Añade un punto al vector de puntos de este cluster.
+    */
+    void addPoint(Point p){
+      this->points.push_back(p);
+    }
+
+    Point getPointByIndex(int i){
+      return (this->points)[i];
+    }
+
+    /*
+    Calcula el medoide primario del set de puntos de este cluster.
+    */
+    void computeMedoid() {
+      if (this->points.empty()) {
+        this->medoid = Point(); // Si no hay puntos, el medoide es un punto vacío
+        return;
+      }
+
+      // Calcular el medoide como el punto con la mínima distancia promedio a todos los demás puntos
+      double minAvgDistance = numeric_limits<double>::max(); // Inicializar con el máximo valor posible
+      Point minMedoid; // Inicializar el medoide mínimo
+
+      for (const Point& p : points) {
+        double totalDistance = 0.0; // Inicializar la suma de las distancias a este punto
+
+        for (const Point& q : points) {
+          totalDistance += dist(p, q); // Calcular la distancia de este punto a todos los demás
+        }
+
+        double avgDistance = totalDistance / points.size(); // Calcular la distancia promedio a este punto
+
+        if (avgDistance < minAvgDistance) {
+          minAvgDistance = avgDistance;
+          minMedoid = p;
+        }
+      }
+
+      // Asignar el medoide mínimo encontrado
+      medoid = minMedoid;
+    }
+
+    /*
+    Calcula el radio de cobertura de este cluster.
+    */
+    void computeRadius() {
+      if (this->points.empty()) {
+        this->radius = 0.0;
+        return;
+      }
+
+      this->radius = 0.0;
+
+      for (const Point& p : this->points) {
+        double distance = dist(medoid, p); // Calcular la distancia de cada punto al medoide
+        if (distance > radius) {
+          radius = distance; // Actualizar el radio si encontramos una distancia mayor
+        }
+      }
     }
 
     /*
@@ -21,17 +150,17 @@ class ClusterT {
 
       // Agregar todos los puntos del cluster actual al nuevo cluster
       for (const Point& p : this->points) {
-        unionCluster.points.push_back(p);
+        unionCluster.addPoint(p);
       }
 
       // Agregar todos los puntos del cluster c al nuevo cluster
-      for (const Point& p : c.points) {
-          unionCluster.points.push_back(p);
+      for (const Point& p : c.getPoints()) {
+        unionCluster.addPoint(p);
       }
 
       // Actualizar el medoide y el radio del nuevo cluster
-      unionCluster.medoid = calcularMedoide(unionCluster.points);
-      unionCluster.radius = calcularRadioCobertura(unionCluster.points, unionCluster.medoid);
+      unionCluster.computeMedoid();
+      unionCluster.computeRadius();
 
       // Retornar el cluster que representa la unión
       return unionCluster;
@@ -62,5 +191,11 @@ class ClusterT {
       return closestCluster;
     }
 
+    bool operator==(const ClusterT& other) {
+        // Implementación del operador de igualdad
+        return this->points == other.getPoints() &&
+           this->medoid == other.getMedoid() &&
+           this->radius == other.getRadius();
+    }
 
 };
