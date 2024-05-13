@@ -23,8 +23,9 @@ struct entry
     /* Estructura para las entradas que pueden haber en un nodo */
     Point p;            // punto
     double cr;          // radio cobertor: máxima distancia entre p y cualquier punto del árbol
-    shared_ptr<Node> a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
-    entry(const Point &point, double coveringradio = 0.0, const shared_ptr<Node> &nodes = nullptr) : p(point), cr(coveringradio), a(nodes) {}
+    Node* a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
+    entry(Point point){p=point; cr = 0; a = nullptr;}
+    entry(Point init_p, double init_r, Node* init_a){p = init_p; cr = init_r; a = init_a;}
 };
 
 struct Node
@@ -50,7 +51,7 @@ struct Node
             int max_child_h = 0;
             for (int i = 0; i < entries.size(); i++)
             {
-                max_child_h = max(max_child_h, entries[i].a.get()->height());
+                max_child_h = max(max_child_h, entries[i].a->height());
                 h = max_child_h + 1;
             }
         }
@@ -96,14 +97,14 @@ vector<Node *> delRoot(Node *T)
 {
     vector<Node *> c; // hijos de T
     for (int i = 0; i < T->entries.size(); i++)
-        c.push_back(T->entries[i].a.get());
+        c.push_back(T->entries[i].a);
     T->entries.clear();
     delete T;
     return c;
 }
 
 /* Método de búsqueda */
-pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos)
+pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int &accesos)
 {
     accesos++;
     if (T->isLeaf())
@@ -127,7 +128,7 @@ pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos
             if (dist(T->entries[i].p, Q.q) <= T->entries[i].cr + Q.r)
             {
                 // cout << "busca en los hijos" << endl;
-                pair<vector<Point>, int> nodeResults = search(T->entries[i].a.get(), Q, res, accesos); // declare the variable "thisNode"
+                pair<vector<Point>, int> nodeResults = search(T->entries[i].a, Q, res, accesos); // declare the variable "thisNode"
                 res.assign(nodeResults.first.begin(), nodeResults.first.end());                        // se buscan posibles respuestas en el hijo a
                 accesos = nodeResults.second;
             }

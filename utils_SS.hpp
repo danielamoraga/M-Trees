@@ -13,7 +13,7 @@ pair<ClusterT, ClusterT> closestPair(vector<ClusterT> C){
 
   for (int i = 0; i < C.size(); ++i) {
     for (int j = i + 1; j < C.size(); ++j) {
-      double distance = dist(C[i].medoid, C[j].medoid);
+      double distance = dist(C[i].getMedoid(), C[j].getMedoid());
       if (distance < minDistance) {
         minDistance = distance;
         closest1 = C[i];
@@ -52,7 +52,7 @@ dos grupos resultantes. Esto se prueba para todo par de puntos y se elige el par
 mínimo radio cobertor máximo.
 */
 pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){
-  int n = c.points.size();
+  int n = c.getCardinality();
 
   pair<ClusterT, ClusterT> dividedClusters;
   double minMaxRadius = numeric_limits<double>::max(); // Inicializamos con el máximo valor posible
@@ -60,25 +60,28 @@ pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){
   // Iterar sobre todos los pares de puntos y encontrar el par con el mínimo radio cobertor máximo
   for (int i = 0; i < n; ++i) {
       for (int j = i + 1; j < n; ++j) {
+
         // Creamos dos clusters temporales con estos dos puntos
         ClusterT cluster1;
-        cluster1.points.push_back(c.points[i]);
+        cluster1.addPoint(c.getPointByIndex(i));
         ClusterT cluster2;
-        cluster2.points.push_back(c.points[j]);
+        cluster2.addPoint(c.getPointByIndex(j));
 
         // Agregar alternadamente el punto más cercano a alguno de estos centros
         for (int k = 0; k < n; ++k) {
           if (k != i && k != j) {
-            if (dist(c.points[k], c.points[i]) < dist(c.points[k], c.points[j])) {
-              cluster1.points.push_back(c.points[k]);
+            if (dist(c.getPointByIndex(k), c.getPointByIndex(i)) < dist(c.getPointByIndex(k), c.getPointByIndex(j))) {
+              cluster1.addPoint(c.getPointByIndex(k));
             } else {
-              cluster2.points.push_back(c.points[k]);
+              cluster2.addPoint(c.getPointByIndex(k));
             }
           }
         }
 
         // Calcular el radio cobertor máximo entre los dos grupos resultantes
-        int maxRadius = max(calculateCoveringRadius(cluster1), calculateCoveringRadius(cluster2));
+        cluster1.computeRadius();
+        cluster2.computeRadius();
+        double maxRadius = max(cluster1.getRadius(), cluster2.getRadius());
 
         // Actualizar si encontramos un mínimo
         if (maxRadius < minMaxRadius) {
@@ -92,12 +95,29 @@ pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){
   return dividedClusters;
 }
 
-
-
-
-/* FUNCIONES AUXILIARES PARA FUNCION OUTPUTHOJA */
-
 /*
 Obtiene el medoide primario de un set de puntos.
 */
-Point getPrimaryMedoid(vector<Point> C){}
+Point getPrimaryMedoid(vector<Point> C){
+  double minAvgDistance = numeric_limits<double>::max();
+  Point minMedoid;
+
+  for (const Point& p : C) {
+    double totalDistance = 0.0; // Inicializar la suma de las distancias a este punto
+
+    for (const Point& q : C) {
+      totalDistance += dist(p, q); // Calcular la distancia de este punto a todos los demás
+    }
+
+    double avgDistance = totalDistance / C.size(); // Calcular la distancia promedio a este punto
+
+    // Actualizar el medoide mínimo si la distancia promedio es menor
+    if (avgDistance < minAvgDistance) {
+      minAvgDistance = avgDistance;
+      minMedoid = p;
+    }
+  }
+
+  // Retornar el medoide mínimo encontrado
+  return minMedoid;
+}
