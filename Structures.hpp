@@ -104,7 +104,7 @@ struct query
 /* MÉTODOS */
 
 /* Método de búsqueda */
-pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int &accesos)
+pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos)
 {
     accesos++;
     if (T->isLeaf())
