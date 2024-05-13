@@ -51,7 +51,7 @@ Los resultados de la ejecución se escribirán en el archivo `resultados.csv`.
 
 ## Limpieza
 
-Para limiar los archivos generados durante la compilación, utiliza el siguiente comando:
+Para limpiar los archivos generados durante la compilación, utiliza el siguiente comando:
 
 ```sh
 make clean
