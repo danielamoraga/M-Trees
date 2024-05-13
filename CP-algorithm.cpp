@@ -25,36 +25,19 @@ Node *CPalgorithm(vector<Point> P, int B)
     vector<vector<Point>> Fk;
 
     while (true) {
-        cout << "while... " << endl;
         k_samples(P, B, F); // Paso 2: conjunto de samples de P
-        cout << "se crea conjunto de samples de tamaño " << F.size() << endl;
         Fk = assignation(P, F); // Paso 3: crea el conjunto de conjuntos Fk
-        cout << "se crea conjunto de conjuntos de samples de tamaño " << Fk.size() << endl;
         redistribution(Fk, F, b); // Paso 4: redistribuye los valores de Fk y modifica F
-        cout << "redistribuimos los conjuntos obteniendo los tamaños" << endl;
-        cout << "F: " << F.size() << endl;
-        cout << "Fk: " << Fk.size() << endl;
         if (F.size() == 1) continue; // Paso 5: si |F|=1, vuelve al paso 2
         else break;
     }
 
-    cout << "Fuera del while, tamaño de Fk: " << Fk.size() << endl;
-
     // Paso 6: se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
     vector<Node *> Tk;
-    cout << "creamos un conjunto de " << Fk.size() << " árboles" << endl;
     for (int j = 0; j < Fk.size(); j++)
     {
-        cout << "Tamaño de Fk[j]: " << Fk[j].size() << endl;
         Node *Tj = CPalgorithm(Fk[j], B);
-        cout << "tj entries antes: " <<Tj->entries.size() << endl;
-        cout << "se crea un árbol con cada Fk[j]" << endl;
         Tk.push_back(Tj);
-        cout << "ponemos el árbol en el vector anterior" << endl;
-
-        cout << "tj entries " << Tj->entries.size() << endl;
-
-        cout << "b: " << b << endl;
     }
 
     // Paso 7: 
@@ -75,7 +58,6 @@ Node *CPalgorithm(vector<Point> P, int B)
     }
 
     vector<Node *> M;
-    cout << "Tk size " <<Tk.size() << endl;
     int h = minHeight(Tk); // altura mínima de de los árboles Tj
     cout << "pasa minheight, h: " << h << endl;
     for (int i = 0; i < Tk.size(); i++)
