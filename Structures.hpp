@@ -31,13 +31,7 @@ struct entry
 struct Node
 {
     vector<entry> entries; // entradas que componen el nodo
-    double B;              // capacidad de entradas en disco del nodo
     Node(){};
-
-    int size()
-    {
-        return entries.size() * B;
-    }
 
     int height()
     {
@@ -51,11 +45,11 @@ struct Node
             int max_child_h = 0;
             for (int i = 0; i < entries.size(); i++)
             {
-                max_child_h = max(max_child_h, entries[i].a->height());
-                h = max_child_h + 1;
+                if (entries[i].a != nullptr)
+                    max_child_h = max(max_child_h, entries[i].a->height());
             }
+            return max_child_h + 1;
         }
-        return h;
     }
 
     bool isLeaf()
@@ -70,6 +64,28 @@ struct Node
         }
         return isLeaf;
     }
+
+    /*void setCR()
+    {
+        if (this == nullptr) return;
+        double max_distance = 0.0;
+        for (int i = 0; i < entries.size(); i++)
+        {
+            for (int j = entries.size(); j = 0; j--)
+            {
+                double distance = dist(entries[i].p, entries[j].p);
+                if (distance > max_distance)
+                {
+                    max_distance = distance;
+                }
+            }
+            entries[i].cr = max_distance;
+        }
+        for (int i = 0; i < entries.size(); i++)
+        {
+            entries[i].a.setCR();
+        }
+    }*/
 };
 
 struct query
@@ -90,17 +106,6 @@ bool operator==(const Point &p1, const Point &p2)
 double dist(Point p, Point q)
 {
     return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
-}
-
-/* Método para eliminar la raíz de un árbol */
-vector<Node *> delRoot(Node *T)
-{
-    vector<Node *> c; // hijos de T
-    for (int i = 0; i < T->entries.size(); i++)
-        c.push_back(T->entries[i].a);
-    T->entries.clear();
-    delete T;
-    return c;
 }
 
 /* Método de búsqueda */
