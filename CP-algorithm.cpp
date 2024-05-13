@@ -21,9 +21,31 @@ Node *CPalgorithm(vector<Point> P, int B)
         return T;
     }
 
-    vector<Point> F; // conjunto de samples
+    vector<Point> K;
+    vector<Point> F;
+    vector<vector<Point>> Sk;
+    vector<vector<Point>> Fk;
 
-    vector<vector<Point>> Fk = steps_2_to_5(P, b, B, F); // crea el conjunto de conjuntos Fk y modifica F
+    while (true) {
+        K = k_samples(P, B); // Paso 2: conjunto de samples
+        cout << "Tamaño F: " << F.size() << endl;
+
+        Sk = assignation(P, K); // Paso 3: crea el conjunto de conjuntos Fk
+        cout << "Fk: (de tamaño " << Sk.size() << ")" << endl;
+        cout << "[" << endl;
+        for (int i=0; i<Sk.size(); i++) {
+            cout << "[";
+            for (int j=0; j<Sk[i].size(); j++)
+                cout << "(" << Sk[i][j].x << "," << Sk[i][j].y << ")";
+            cout << "]," << endl;
+        }
+        cout << "]" << endl;
+
+        auto [Fk, F] = redistribution(Sk, K, b); // Paso 4: redistribuye los valores de Fk y modifica F
+        if (F.size() == 1) continue; // Paso 5: si |F|=1, vuelve al paso 2
+        else break;
+    }
+
     cout << "se crea conjunto de conjuntos de samples Fk" << endl;
 
     // se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj

@@ -15,9 +15,10 @@ Node *newNode(vector<Point> P)
 
 /*  Paso 2:
     Elige k puntos aleatorios de P que inserta en un conjunto F*/
-vector<Point> k_samples(vector<Point> P, int k, int B, vector<Point> F)
+vector<Point> k_samples(vector<Point> P, int B)
 {
-    F.clear(); // vacía F para generarlo de nuevo
+    vector<Point> F;
+    int k = min(B,(int)ceil(P.size()/B));
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> distr(0, P.size());
@@ -51,7 +52,6 @@ int closestIndex(Point p, vector<Point> F)
     }
     return index;
 }
-
 // asignación de los puntos
 vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
 {
@@ -69,47 +69,27 @@ vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
     Si un Fk[j] es tq Fk[j].size < b
     * Quita F[j] de F
     * Por cada p en Fk[j] busca su sample F[l] más cercano de F y lo añadimos a Fk[l] */
-vector<vector<Point>> redistribution(vector<vector<Point>> Fk, vector<Point> F, double b, int k)
+pair<vector<vector<Point>>,vector<Point>> redistribution(vector<vector<Point>> Fk, vector<Point> F, double b)
 {
-    for (int j = 0; j < k; j++)
-    {   cout << "recorremos Fk" << endl;
+    vector<Point> K = F; // copiamos F para no tener problemas al recorrer el arreglo
+    for (int j = 0; j < Fk.size(); j++)
+    {
+        cout << "recorremos Fk" << endl;
         if (Fk[j].size() < b)
         {                           // si algún Fk tiene tamaño menor a b, quitamos F[j] de F
             cout << Fk[j].size() << " es menor que " << b << "." << endl;
-            F.erase(F.begin() + j); // quitamos el elemento F[j] del conjunto F
+            K.erase(K.begin() + j); // quitamos el elemento F[j] del conjunto F
             cout << "Quitamos (" << F[j].x << "," << F[j].y << ") de F." << endl;
             for (int i=0; i<Fk[j].size(); i++) {
                 cout << "Revisamos el punto (" << Fk[j][i].x << "," << Fk[j][i].y << ")" << endl;
-                int l = closestIndex(Fk[j][i],F);
-                cout << "Su sample más cercano es: (" << F[l].x << "," << F[l].y << ")" << endl;
-                Fk[l].push_back(F[l]);
+                int l = closestIndex(Fk[j][i],K);
+                cout << "Su sample más cercano es: (" << K[l].x << "," << K[l].y << ")" << endl;
+                Fk[l].push_back(K[l]);
                 cout << "Agregamos el sample a Fk[l]" << endl;
             }
         }
     }
-    return Fk;
-}
-
-/*  Paso 5:
-    Si el tamaño de F es 1 volvemos al paso 2
-    -> Haremos una función recursiva con los pasos del 2 al 5 */
-vector<vector<Point>> steps_2_to_5(vector<Point> P, double b, int B, vector<Point> F)
-{
-    int n = P.size();
-    int k = min(B, (int)ceil(n / B));
-    cout << "k = " << k << endl;
-    vector<Point> G = k_samples(P, k, B, F);      // step 2
-    vector<vector<Point>> Fk = assignation(P, G); // step 3
-    cout << "se hace la asignación Fk" << endl;
-    redistribution(Fk, F, b, k); // step 4
-    if (F.size() == 1)
-    { // step 5
-        return steps_2_to_5(P, b, B, F);
-    }
-    else
-    {
-        return Fk;
-    }
+    return {Fk,K};
 }
 
 /*  Paso 9: Balanceamiento */
