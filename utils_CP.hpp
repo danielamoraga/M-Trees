@@ -83,13 +83,39 @@ void redistribution(vector<vector<Point>> &Fk, vector<Point> &F, double b)
     }
 }
 
+/*  Paso 6:
+    Se realiza recursivamente el algoritmo CP en cada Fj, obteniendo el árbol Tj*/
+/*vector<Node *> Tk_trees() {
+    vector<Node *> Tk;
+    for (int j = 0; j < Fk.size(); j++)
+        Tk.push_back(CPalgorithm(Fk[j], B));
+    return Tk;
+}*/
+
+/*  Paso 7:
+    Si la raíz del árbol es de un tamaño menor a b, se quita esa raíz, se elimina pfj de F y se trabaja
+    con sus subárboles como nuevos Tj , . . . , Tj+p−1, se añaden los puntos pertinentes a F. */
+// Método para eliminar la raíz de un árbol, retornando los hijos del arbol como vector de nodos.
+vector<entry> delRoot(Node* &T)
+{
+    vector<entry> c; // entradas de T
+    for (int i = 0; i < T->entries.size(); i++)
+        c.push_back(T->entries[i]);
+    T->entries.clear();
+    return c;
+}
+
 /*  Paso 9: Balanceamiento */
 // calcula altura mínima
-int minHeight(vector<Node *> Tk)
+int minHeight(vector<Node *> &Tk)
 {
+    cout << "--- minHeight ---" << endl;
+    cout << "tk size: " << Tk.size() << endl;
     int h_min = Tk[0]->height();
+    cout << "h min: " << h_min << endl;
     for (int k = 1; k < Tk.size(); k++)
     {
+        cout << "Tk[k] height: " << Tk[k]->height() << endl;
         int h_min = min(h_min, Tk[k]->height());
     }
     return h_min;
@@ -127,10 +153,9 @@ void searchPoint(Node *T, Point p, Node *M)
 
 /*  Paso 11:
     Calcula el radio cobertor de cada punto en un árbol */
-void setCR(Node *T)
+void setCR(Node* &T)
 {
-    if (T == nullptr)
-        ;
+    if (T == nullptr) return;
     double max_distance = 0.0;
     for (int i = 0; i < T->entries.size(); i++)
     {
@@ -148,4 +173,7 @@ void setCR(Node *T)
     {
         setCR(T->entries[i].a);
     }
+
+    cout << "termino (soy setCR)" << endl;
+
 }
