@@ -46,13 +46,14 @@ Node *CPalgorithm(vector<Point> P, int B)
         if (Tk[j]->entries.size() < b)
         {
             cout << "if?" << endl;                  // si la raíz de Tj es de tamaño menor a b
-            vector<entry> Tj_entries = delRoot(Tk[j]); // se quita esa raíz
+            vector<entry> Tkj = Tk[j]->entries; // se quita esa raíz
+            Tk.erase(Tk.begin() + j);
             F.erase(F.begin() + j);                // se elimina pfj de F
-            for (int i = 0; i < Tj_entries.size(); i++)
+            for (int i = 0; i < Tkj.size(); i++)
             {
-                Tk.push_back(Tj_entries[i].a); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                cout << "Tj entries " << Tk[j]->entries.size() << endl;
-                F.push_back(Tj_entries[i].p); // se añaden los puntos pertinentes a F
+                Tk.push_back(Tkj[i].a); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
+                cout << "Tj entries " << Tkj.size() << endl;
+                F.push_back(Tkj[i].p); // se añaden los puntos pertinentes a F
             }
         }
     }
