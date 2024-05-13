@@ -64,28 +64,6 @@ struct Node
         }
         return isLeaf;
     }
-
-    /*void setCR()
-    {
-        if (this == nullptr) return;
-        double max_distance = 0.0;
-        for (int i = 0; i < entries.size(); i++)
-        {
-            for (int j = entries.size(); j = 0; j--)
-            {
-                double distance = dist(entries[i].p, entries[j].p);
-                if (distance > max_distance)
-                {
-                    max_distance = distance;
-                }
-            }
-            entries[i].cr = max_distance;
-        }
-        for (int i = 0; i < entries.size(); i++)
-        {
-            entries[i].a.setCR();
-        }
-    }*/
 };
 
 struct query
@@ -109,7 +87,7 @@ double dist(Point p, Point q)
 }
 
 /* Método de búsqueda */
-pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int &accesos)
+pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int accesos)
 {
     accesos++;
     if (T->isLeaf())

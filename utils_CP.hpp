@@ -1,4 +1,5 @@
 #include "Structures.hpp"
+#include <random>
 
 /*  Paso 1:
     Se crea un árbol T, se insertan todos los puntos en este y se retorna el árbol */
@@ -17,6 +18,7 @@ Node *newNode(vector<Point> P)
     Elige k puntos aleatorios de P que inserta en un conjunto F*/
 void k_samples(vector<Point> P, int B, vector<Point>&F)
 {
+    // cout << "--- k_samples ---" << endl;
     int k = min(B,(int)ceil(P.size()/B));
     random_device rd;
     mt19937 gen(rd());
@@ -37,6 +39,7 @@ void k_samples(vector<Point> P, int B, vector<Point>&F)
 // indice de F del punto más cercano a P
 int closestIndex(Point p, vector<Point> F)
 {
+    // cout << "--- closestIndex ---" << endl;
     double distance = dist(p, F[0]);
     int index = 0;
     for (int k = 0; k < F.size(); k++)
@@ -52,6 +55,7 @@ int closestIndex(Point p, vector<Point> F)
 // asignación de los puntos
 vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
 {
+    // cout << "--- assignation ---" << endl;
     vector<vector<Point>> Fk;
     Fk.resize(F.size());
     for (int i = 0; i < P.size(); i++)
@@ -68,6 +72,7 @@ vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
     * Por cada p en Fk[j] busca su sample F[l] más cercano de F y lo añadimos a Fk[l] */
 void redistribution(vector<vector<Point>> &Fk, vector<Point> &F, double b)
 {
+    // cout << "--- redistribution ---" << endl;
     for (int j = 0; j < Fk.size(); j++)
     {
         if (Fk[j].size() < b)
@@ -92,30 +97,14 @@ void redistribution(vector<vector<Point>> &Fk, vector<Point> &F, double b)
     return Tk;
 }*/
 
-/*  Paso 7:
-    Si la raíz del árbol es de un tamaño menor a b, se quita esa raíz, se elimina pfj de F y se trabaja
-    con sus subárboles como nuevos Tj , . . . , Tj+p−1, se añaden los puntos pertinentes a F. */
-// Método para eliminar la raíz de un árbol, retornando los hijos del arbol como vector de nodos.
-vector<entry> delRoot(Node* &T)
-{
-    vector<entry> c; // entradas de T
-    for (int i = 0; i < T->entries.size(); i++)
-        c.push_back(T->entries[i]);
-    T->entries.clear();
-    return c;
-}
-
 /*  Paso 9: Balanceamiento */
 // calcula altura mínima
 int minHeight(vector<Node *> &Tk)
 {
-    cout << "--- minHeight ---" << endl;
-    cout << "tk size: " << Tk.size() << endl;
+    // cout << "--- minHeight ---" << endl;
     int h_min = Tk[0]->height();
-    cout << "h min: " << h_min << endl;
     for (int k = 1; k < Tk.size(); k++)
     {
-        cout << "Tk[k] height: " << Tk[k]->height() << endl;
         int h_min = min(h_min, Tk[k]->height());
     }
     return h_min;
@@ -123,6 +112,7 @@ int minHeight(vector<Node *> &Tk)
 // balancea el árbol y modifica F
 void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
 {
+    // cout << "--- balancing ---" << endl;
     if (Tk->height() == h) // si su altura es igual a h
         M.push_back(Tk);   // se añade a M
     else
@@ -132,8 +122,15 @@ void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
         // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
         for (int j = 0; j < Tk->entries.size(); j++)
         {
-            for (int k = 0; k < Tk->entries.size(); j++)
-                balancing(Tk->entries[k].a, F, M, h, i);
+            for (int k = 0; k < Tk->entries.size(); k++)
+            {
+                entry thisEntry = Tk->entries[k];
+                if (thisEntry.a != nullptr)
+                {
+                    balancing(thisEntry.a, F, M, h, i);
+                    if(thisEntry.a->height() == h) F.push_back(thisEntry.p);
+                }
+            }
         }
     }
 }
@@ -141,6 +138,7 @@ void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
 /*Paso 10*/
 void searchPoint(Node *T, Point p, Node *M)
 {
+    // cout << "--- searchPoint ---" << endl;
     for (int i = 0; i < T->entries.size(); i++)
     {
         entry thisEntry = T->entries[i];
@@ -155,11 +153,12 @@ void searchPoint(Node *T, Point p, Node *M)
     Calcula el radio cobertor de cada punto en un árbol */
 void setCR(Node* &T)
 {
+    // cout << "--- setCR ---" << endl;
     if (T == nullptr) return;
-    double max_distance = 0.0;
     for (int i = 0; i < T->entries.size(); i++)
     {
-        for (int j = T->entries.size(); j = 0; j--)
+        double max_distance = 0.0;
+        for (int j = 0; j < T->entries.size(); j++)
         {
             double distance = dist(T->entries[i].p, T->entries[j].p);
             if (distance > max_distance)
@@ -173,7 +172,4 @@ void setCR(Node* &T)
     {
         setCR(T->entries[i].a);
     }
-
-    cout << "termino (soy setCR)" << endl;
-
 }

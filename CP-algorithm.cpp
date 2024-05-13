@@ -15,7 +15,9 @@ Node *CPalgorithm(vector<Point> P, int B)
 {
     double b = 0.5 * B;
 
-    if (P.size() <= B) // Paso 1: si n es menor o igual a B
+    // Paso 1: si n es menor o igual a B
+    cout << "CPalgorithm - Paso 1" << endl;
+    if (P.size() <= B)
     {
         Node *T = newNode(P); // se crea un árbol T y se insertan todos los puntos en él
         return T; // se retorna T
@@ -25,74 +27,67 @@ Node *CPalgorithm(vector<Point> P, int B)
     vector<vector<Point>> Fk;
 
     while (true) {
-        cout << "while... " << endl;
+    cout << "CPalgorithm - Paso 2" << endl;
         k_samples(P, B, F); // Paso 2: conjunto de samples de P
-        cout << "se crea conjunto de samples de tamaño " << F.size() << endl;
+    cout << "CPalgorithm - Paso 3" << endl;
         Fk = assignation(P, F); // Paso 3: crea el conjunto de conjuntos Fk
-        cout << "se crea conjunto de conjuntos de samples de tamaño " << Fk.size() << endl;
+    cout << "CPalgorithm - Paso 4" << endl;
         redistribution(Fk, F, b); // Paso 4: redistribuye los valores de Fk y modifica F
-        cout << "redistribuimos los conjuntos obteniendo los tamaños" << endl;
-        cout << "F: " << F.size() << endl;
-        cout << "Fk: " << Fk.size() << endl;
+    cout << "CPalgorithm - Paso 5" << endl;
         if (F.size() == 1) continue; // Paso 5: si |F|=1, vuelve al paso 2
         else break;
     }
 
-    cout << "Fuera del while, tamaño de Fk: " << Fk.size() << endl;
-
-    // Paso 6: se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
+    // Paso 6
+    cout << "CPalgorithm - Paso 6" << endl;
     vector<Node *> Tk;
-    cout << "creamos un conjunto de " << Fk.size() << " árboles" << endl;
-    for (int j = 0; j < Fk.size(); j++)
-    {
-        cout << "Tamaño de Fk[j]: " << Fk[j].size() << endl;
-        Node *Tj = CPalgorithm(Fk[j], B);
-        cout << "tj entries antes: " <<Tj->entries.size() << endl;
-        cout << "se crea un árbol con cada Fk[j]" << endl;
-        Tk.push_back(Tj);
-        cout << "ponemos el árbol en el vector anterior" << endl;
-
-        cout << "tj entries " << Tj->entries.size() << endl;
-
-        cout << "b: " << b << endl;
+    for (int j = 0; j < Fk.size(); j++) {
+        // se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tk
+        Tk.push_back(CPalgorithm(Fk[j], B));
     }
 
-    // Paso 7: 
+    // Paso 7
+    cout << "CPalgorithm - Paso 7" << endl;
     for (int j = 0; j < Tk.size(); j++)
     {
+
         if (Tk[j]->entries.size() < b)
-        {
-            cout << "if?" << endl;                  // si la raíz de Tj es de tamaño menor a b
-            vector<entry> Tj_entries = delRoot(Tk[j]); // se quita esa raíz
+        {   // si la raíz de Tj es de tamaño menor a b
+            vector<entry> Tkj = Tk[j]->entries;
+            Tk.erase(Tk.begin() + j); // se quita esa raíz
             F.erase(F.begin() + j);                // se elimina pfj de F
-            for (int i = 0; i < Tj_entries.size(); i++)
+            for (int i = 0; i < Tkj.size(); i++)
             {
-                Tk.push_back(Tj_entries[i].a); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                cout << "Tj entries " << Tk[j]->entries.size() << endl;
-                F.push_back(Tj_entries[i].p); // se añaden los puntos pertinentes a F
+                if (Tkj[i].a != nullptr)
+                {
+                    Tk.push_back(Tkj[i].a); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
+                    F.push_back(Tkj[i].p); // se añaden los puntos pertinentes a F
+                }
             }
         }
     }
 
-    vector<Node *> M;
-    cout << "Tk size " <<Tk.size() << endl;
+    // Paso 8
+    cout << "CPalgorithm - Paso 8" << endl;
+    vector<Node *> M; // se define un conjunto de árboles inicialmente vacío
     int h = minHeight(Tk); // altura mínima de de los árboles Tj
-    cout << "pasa minheight, h: " << h << endl;
+
+    // Paso 9
+    cout << "CPalgorithm - Paso 9" << endl;
     for (int i = 0; i < Tk.size(); i++)
-        balancing(Tk[i], F, M, h, i);
+        balancing(Tk[i], F, M, h, i); // por cada Tk[i], si su altura es igual a h, se añade a M, sino..
 
-    cout << "M: " << M.size() << endl;
-
-    // se define Tsup como el resultado de la llamada al algoritmo CP aplicado a F
+    // Paso 10: se define Tsup como el resultado de la llamada al algoritmo CP aplicado a F
+    cout << "CPalgorithm - Paso 10" << endl;
     Node *Tsup = CPalgorithm(F, B);
 
-    // se une cada Tj en M a su hoja en Tsup correspondiente al punto pfj en F, obteniendo un nuevo árbol T
+    // Paso 11: se une cada Tj en M a su hoja en Tsup correspondiente al punto pfj en F, obteniendo un nuevo árbol T
+    cout << "CPalgorithm - Paso 11" << endl;
     for (int j = 0; j < M.size(); j++)
     {
         // Punto pfj en F
         Point pfj = F[j];
         // Buscar la hoja correspondiente en Tsup
-        cout <<"tsup entries size: " <<Tsup->entries.size() << endl;
         for (int i = 0; i < Tsup->entries.size(); i++)
         {
             if (Tsup->entries[i].p == pfj)
@@ -105,9 +100,11 @@ Node *CPalgorithm(vector<Point> P, int B)
         }
     }
 
-    // se setean los radios cobertores resultantes para cada entrada en este árbol.
+    // Paso 12: se setean los radios cobertores resultantes para cada entrada en este árbol.
+    cout << "CPalgorithm - Paso 12" << endl;
     setCR(Tsup);
 
-    // se retorna T
+    // Paso 13: se retorna Tsup
+    cout << "CPalgorithm - Paso 13" << endl;
     return Tsup;
 }
