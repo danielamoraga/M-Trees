@@ -21,39 +21,35 @@ Node *CPalgorithm(vector<Point> P, int B)
         return T;
     }
 
-    vector<Point> K;
     vector<Point> F;
-    vector<vector<Point>> Sk;
     vector<vector<Point>> Fk;
 
     while (true) {
-        K = k_samples(P, B); // Paso 2: conjunto de samples
-        cout << "Tamaño F: " << F.size() << endl;
-
-        Sk = assignation(P, K); // Paso 3: crea el conjunto de conjuntos Fk
-        cout << "Fk: (de tamaño " << Sk.size() << ")" << endl;
-        cout << "[" << endl;
-        for (int i=0; i<Sk.size(); i++) {
-            cout << "[";
-            for (int j=0; j<Sk[i].size(); j++)
-                cout << "(" << Sk[i][j].x << "," << Sk[i][j].y << ")";
-            cout << "]," << endl;
-        }
-        cout << "]" << endl;
-
-        auto [Fk, F] = redistribution(Sk, K, b); // Paso 4: redistribuye los valores de Fk y modifica F
+        cout << "while... " << endl;
+        F = k_samples(P, B); // Paso 2: conjunto de samples
+        cout << "se crea conjunto de samples de tamaño " << F.size() << endl;
+        Fk = assignation(P, F); // Paso 3: crea el conjunto de conjuntos Fk
+        cout << "se crea conjunto de conjuntos de samples de tamaño " << Fk.size() << endl;
+        redistribution(Fk, F, b); // Paso 4: redistribuye los valores de Fk y modifica F
+        cout << "redistribuimos los conjuntos obteniendo los tamaños" << endl;
+        cout << "F: " << F.size() << endl;
+        cout << "Fk: " << Fk.size() << endl;
         if (F.size() == 1) continue; // Paso 5: si |F|=1, vuelve al paso 2
         else break;
     }
 
-    cout << "se crea conjunto de conjuntos de samples Fk" << endl;
+    cout << "Fuera del while, tamaño de Fk: " << Fk.size() << endl;
 
     // se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
     vector<Node *> Tk;
+    cout << "creamos un conjunto de " << Fk.size() << " árboles" << endl;
     for (int j = 0; j < Fk.size(); j++)
     {
+        cout << "Tamaño de Fk: " << Fk[j].size() << endl;
         Node *Tj = CPalgorithm(Fk[j], B);
+        cout << "se crea un árbol con cada Fk[j]" << endl;
         Tk.push_back(Tj);
+        cout << "ponemos el árbol en el vector anterior" << endl;
 
         if (Tj->entries.size() < b)
         {                                          // si la raíz de Tj es de tamaño menor a b
