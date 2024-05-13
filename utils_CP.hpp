@@ -108,7 +108,7 @@ void balancing(Node *Tk, vector<Point> F, vector<Node *> M, int h, int i)
         for (int j = 0; j < Tk->entries.size(); j++)
         {
             for (int k = 0; k < Tk->entries.size(); j++)
-                balancing(Tk->entries[k].a.get(), F, M, h, i);
+                balancing(Tk->entries[k].a, F, M, h, i);
         }
     }
 }
@@ -120,7 +120,7 @@ void searchPoint(Node *T, Point p, Node *M)
     {
         entry thisEntry = T->entries[i];
         if (thisEntry.p == p)
-            T->entries[i].a.reset(M);
+            T->entries[i].a = M;
         else
             continue;
     }
@@ -147,6 +147,6 @@ void setCR(Node *T)
     }
     for (int i = 0; i < T->entries.size(); i++)
     {
-        setCR(T->entries[i].a.get());
+        setCR(T->entries[i].a);
     }
 }

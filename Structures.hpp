@@ -24,7 +24,7 @@ struct entry
     Point p;            // punto
     double cr;          // radio cobertor: máxima distancia entre p y cualquier punto del árbol
     Node* a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno
-    entry(Point point){p=point; cr = 0; a = nullptr;}
+    entry(Point point){p=point; cr = 0.0; a = nullptr;}
     entry(Point init_p, double init_r, Node* init_a){p = init_p; cr = init_r; a = init_a;}
 };
 
