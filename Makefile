@@ -14,3 +14,6 @@ runSS:
 runWF:
 	g++ WriteFile.cpp -o $(APP_PATH)
 	$(APP_PATH)
+
+clean:
+	rm $(APP_PATH)
