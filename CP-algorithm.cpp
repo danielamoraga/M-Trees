@@ -105,8 +105,8 @@ Node *CPalgorithm(vector<Point> P, int B)
         }
     }
 
-    // se setean los radios cobertores resultantes para cada entrada en este árbol.
-    setCR(Tsup);
+    // Paso 12: se setean los radios cobertores resultantes para cada entrada en este árbol.
+    Tsup->setCR();
 
     // se retorna T
     return Tsup;

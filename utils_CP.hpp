@@ -150,30 +150,3 @@ void searchPoint(Node *T, Point p, Node *M)
             continue;
     }
 }
-
-/*  Paso 11:
-    Calcula el radio cobertor de cada punto en un árbol */
-void setCR(Node* &T)
-{
-    if (T == nullptr) return;
-    double max_distance = 0.0;
-    for (int i = 0; i < T->entries.size(); i++)
-    {
-        for (int j = T->entries.size(); j = 0; j--)
-        {
-            double distance = dist(T->entries[i].p, T->entries[j].p);
-            if (distance > max_distance)
-            {
-                max_distance = distance;
-            }
-        }
-        T->entries[i].cr = max_distance;
-    }
-    for (int i = 0; i < T->entries.size(); i++)
-    {
-        setCR(T->entries[i].a);
-    }
-
-    cout << "termino (soy setCR)" << endl;
-
-}

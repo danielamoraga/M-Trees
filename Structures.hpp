@@ -9,14 +9,26 @@ using namespace std;
 
 /* ESTRUCTURAS */
 
-struct Node;
-
 /* Estructura que define un punto */
 struct Point
 {
     double x;
     double y;
 };
+
+/* Operador booleano == para la estructura Point */
+bool operator==(const Point &p1, const Point &p2)
+{
+    return p1.x == p2.x && p1.y == p2.y;
+}
+
+/* Distancia euclidiana entre dos puntos */
+double dist(Point p, Point q)
+{
+    return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
+}
+
+struct Node;
 
 struct entry
 {
@@ -65,27 +77,26 @@ struct Node
         return isLeaf;
     }
 
-    /*void setCR()
+    void setCR()
     {
-        if (this == nullptr) return;
-        double max_distance = 0.0;
-        for (int i = 0; i < entries.size(); i++)
+        for (entry& e : entries)
         {
-            for (int j = entries.size(); j = 0; j--)
+            double max_distance = 0.0;
+            for (entry& other_entry : entries)
             {
-                double distance = dist(entries[i].p, entries[j].p);
-                if (distance > max_distance)
+                if (&e != &other_entry)
                 {
-                    max_distance = distance;
+                    double d = dist(e.p, other_entry.p);
+                    max_distance = max(max_distance, d);
                 }
             }
-            entries[i].cr = max_distance;
+            e.cr = max_distance;
+            /*if (e.a != nullptr)
+            {
+                e.a->setCR();
+            }*/
         }
-        for (int i = 0; i < entries.size(); i++)
-        {
-            entries[i].a.setCR();
-        }
-    }*/
+    }
 };
 
 struct query
@@ -95,18 +106,6 @@ struct query
 };
 
 /* MÉTODOS */
-
-/* Operador booleano == para la estructura Point */
-bool operator==(const Point &p1, const Point &p2)
-{
-    return p1.x == p2.x && p1.y == p2.y;
-}
-
-/* Distancia euclidiana entre dos puntos */
-double dist(Point p, Point q)
-{
-    return sqrt(pow(p.x - q.x, 2) + pow(p.y - q.y, 2));
-}
 
 /* Método de búsqueda */
 pair<vector<Point>, int> search(Node *T, query Q, vector<Point> res, int &accesos)
