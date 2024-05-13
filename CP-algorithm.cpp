@@ -45,9 +45,9 @@ Node *CPalgorithm(vector<Point> P, int B)
     {
         if (Tk[j]->entries.size() < b)
         {
-            cout << "if?" << endl;                  // si la raíz de Tj es de tamaño menor a b
-            vector<entry> Tkj = Tk[j]->entries; // se quita esa raíz
-            Tk.erase(Tk.begin() + j);
+            cout << "if?" << endl;                 // si la raíz de Tj es de tamaño menor a b
+            vector<entry> Tkj = Tk[j]->entries;
+            Tk.erase(Tk.begin() + j);              // se quita esa raíz
             F.erase(F.begin() + j);                // se elimina pfj de F
             for (int i = 0; i < Tkj.size(); i++)
             {
