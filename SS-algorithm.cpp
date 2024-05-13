@@ -11,23 +11,30 @@ input: vector de puntos de tamaño mínimo b
 vector<ClusterT> Cluster(vector<Point> Cin, int B){
 
   // 1. Se define Cout = {} y C = {}
+
+  cout << "Cluster - Paso 1" << endl;
   vector<ClusterT> Cout = {};
   vector<ClusterT> C = {};
 
   // 2. Por cada punto p ∈ Cin se añade {p} a C.
+  cout << "Cluster - Paso 2" << endl;
   for (Point p : Cin){
     ClusterT singleton({p});
     clusterAdd(singleton, C);
   }
 
-  // 3. Mientras |C| > 1:
+  // 3. Mientras |C| > 1: ESTE PASO ES MUY LENTO 😭
+  cout << "Cluster - Paso 3" << endl;
   while (C.size() > 1){
+  cout << "Cluster - Paso 3.1" << endl;
     // 3.1 Sea c1, c2 los pares más cercanos de clusters en C tal que |c1| ≥ |c2|.
     pair<ClusterT, ClusterT> closest_pair = closestPair(C);
     ClusterT c1 = closest_pair.first;
     ClusterT c2 = closest_pair.second;
 
     // 3.2 Si |c1 ∪ c2| ≤ B, se remueve c1 y c2 de C y se añade c1 ∪ c2 a C.
+  cout << "Cluster - Paso 3.2" << endl;
+
     ClusterT c1_u_c2 = c1.cUnion(c2);
     if(c1_u_c2.getCardinality() <= B) {
 
@@ -45,25 +52,32 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
   }
 
   // 4. Sea c el último elemento de C
+  cout << "Cluster - Paso 4" << endl;
   ClusterT c = C[0];
 
   // 5. Si |Cout| > 0:
+  cout << "Cluster - Paso 5" << endl;
   ClusterT c_p; // c′
   if (Cout.size() > 0){
     // 5.1 definimos c′ como el vecino más cercano a c en Cout. Removemos c′ de Cout
+  cout << "Cluster - Paso 5.1" << endl;
     c_p = c.closestNeighbour(Cout);
     clusterRemove(c_p, Cout);
   }
 
   // 6. Si |c ∪ c′| ≤ B:
+  cout << "Cluster - Paso 6" << endl;
   ClusterT c_u_cp = c.cUnion(c_p);
   if (c_u_cp.getCardinality() <= B){
     // 6.1 Añadimos c ∪ c′ a Cout.
+  cout << "Cluster - Paso 6.1" << endl;
+
     clusterAdd(c_u_cp, Cout);
   }
 
   // 6.2 Si no, dividimos c ∪ c′ en c1 y c2 usando MinMax split policy. Se añaden c1 y c2 a Cout.
   else{
+  cout << "Cluster - Paso 6.2" << endl; // PASO MUY LENTO
     pair<ClusterT, ClusterT> c1_c2 = minMaxDivide(c_u_cp);
     ClusterT c1 = c1_c2.first;
     ClusterT c2 = c1_c2.second;
@@ -72,6 +86,7 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
   }
 
   // 7. Se retorna Cout
+  cout << "Cluster - Paso 7" << endl;
   return Cout;
 }
 
@@ -81,11 +96,14 @@ Input: Cin
 */
 entry OutputHoja(vector<Point> Cin){
   // 1. Sea g el medoide primario de Cin. Sea r = 0. Sea C = {} (el que corresponderá al nodo hoja).
+  cout << "OutputHoja - Paso 1" << endl;
+
   Point g = getPrimaryMedoid(Cin);
   double r = 0;
   Node* C = new Node();
 
   // 2. Por cada p ∈ Cin: Añadimos (p, null, null) a C.
+  cout << "OutputHoja - Paso 2" << endl;
   for (Point p : Cin){
     // Añadimos (p, null, null) a C
     entry e(p);
@@ -96,9 +114,11 @@ entry OutputHoja(vector<Point> Cin){
   }
 
   // 3. Guardamos el puntero a C como a
+  cout << "OutputHoja - Paso 3" << endl;
   Node* a = C;
 
   // 4. Retornamos (g, r, a)
+  cout << "OutputHoja - Paso 4" << endl;
   entry ret(g,r,a);
   return ret;
 }
@@ -111,6 +131,7 @@ Input: Cmra, un conjunto de tuplas (g, r, a) retornadas por OutputHoja
 */
 entry OutputInterno(vector<entry> Cmra){
   // 1. Sea Cin = {g|∃(g, r, a) ∈ Cmra}. G el medoide primario de Cin. Sea R = 0. Sea C = {} (el que corresponderá a un nodo interno).
+  cout << "OutputInterno - Paso 1" << endl;
   vector<Point> Cin;
   for(entry ent : Cmra) {
     Cin.push_back(ent.p);
@@ -120,6 +141,7 @@ entry OutputInterno(vector<entry> Cmra){
   Node *C = new Node();
 
   // 2. Por cada (g, r, a) ∈ Cmra: Añadir (g, r, a) a C. Se setea R = max(R, dist(G, g) + r)
+  cout << "OutputInterno - Paso 2" << endl;
   for(entry ent : Cmra) {
     Point g = ent.p;
     double r = ent.cr;
@@ -129,9 +151,11 @@ entry OutputInterno(vector<entry> Cmra){
   }
 
   // 3. Guardamos el puntero a C como A.
+  cout << "OutputInterno - Paso 3" << endl;
   Node* A = C;
 
   // 4. Retornamos (G, R, A)
+  cout << "OutputInterno - Paso 4" << endl;
   entry ret(G, R, A);
   return ret;
 
@@ -142,9 +166,7 @@ AlgoritmoSS: retorna la raíz del M-tree construído.
 
 Input: Cin, un conjunto de puntos
 */
-Node* SSAlgorithm(vector<Point> Cin, int B){
-  cout << "size Cin " << Cin.size() << endl;
-
+Node* SSalgorithm(vector<Point> Cin, int B){
 
   // 1. Si |Cin| ≤ B: Se define (g, r, a) = OutputHoja(Cin) y se retorna a
   if (Cin.size() <= B){
@@ -157,19 +179,18 @@ Node* SSAlgorithm(vector<Point> Cin, int B){
   cout << "SSA - Paso 2" << endl;
   vector<ClusterT> Cout = Cluster(Cin, B);
   vector<entry> C;
-  cout << "size Cout " << Cout.size() << endl;
 
   // 3. Por cada c ∈ Cout: Se añade OutputHoja(c) a C
   cout << "SSA - Paso 3" << endl;
   for (ClusterT c: Cout){
     C.push_back(OutputHoja(c.getPoints()));
   }
-  cout << "size C " << C.size() << endl;
 
   // 4. Mientras |C| > B:
   cout << "SSA - Paso 4" << endl;
   while (C.size() > B){
     // 4.1 Sea Cin = {g|(g, r, a) ∈ C}. Sea Cout = Cluster(Cin). Sea Cmra = {}
+    cout << "SSA - Paso 4.1" << endl;
     for(entry ent : C) {
       Cin.push_back(ent.p);
     }
@@ -177,6 +198,7 @@ Node* SSAlgorithm(vector<Point> Cin, int B){
     vector<vector<entry>> Cmra;
 
     // 4.2 Por cada c ∈ Cout: Sea s = {(g, r, a)|(g, r, a) ∈ C ∧ g ∈ c}, se añade s a Cmra
+    cout << "SSA - Paso 4.2" << endl;
     for (ClusterT c: Cout){
       vector<entry> s;
       for(entry ent : C) {
@@ -190,9 +212,11 @@ Node* SSAlgorithm(vector<Point> Cin, int B){
     }
 
     // 4.3 Sea C = {}.
+    cout << "SSA - Paso 4.3" << endl;
     C.clear();
 
     // 4.4 Por cada s ∈ Cmra: Añadir OutputInterno(s) a C
+    cout << "SSA - Paso 4.4" << endl;
     for(vector<entry> s : Cmra) {
       C.push_back(OutputInterno(s));
     }
