@@ -30,9 +30,9 @@ double dist(Point p, Point q)
 
 struct Node;
 
+/* Estructura para las entradas que pueden haber en un nodo */
 struct entry
 {
-    /* Estructura para las entradas que pueden haber en un nodo */
     Point p;            // punto
     double cr;          // radio cobertor: máxima distancia entre p y cualquier punto del árbol
     Node* a; // dirección en disco a la página de su hijo identificado por la entrada de su nodo interno

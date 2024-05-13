@@ -60,11 +60,8 @@ Node *CPalgorithm(vector<Point> P, int B)
 
     vector<Node *> M;
     int h = minHeight(Tk); // altura mínima de de los árboles Tj
-    cout << "pasa minheight, h: " << h << endl;
     for (int i = 0; i < Tk.size(); i++)
         balancing(Tk[i], F, M, h, i);
-
-    cout << "M: " << M.size() << endl;
 
     // se define Tsup como el resultado de la llamada al algoritmo CP aplicado a F
     Node *Tsup = CPalgorithm(F, B);
@@ -75,7 +72,6 @@ Node *CPalgorithm(vector<Point> P, int B)
         // Punto pfj en F
         Point pfj = F[j];
         // Buscar la hoja correspondiente en Tsup
-        cout <<"tsup entries size: " <<Tsup->entries.size() << endl;
         for (int i = 0; i < Tsup->entries.size(); i++)
         {
             if (Tsup->entries[i].p == pfj)
