@@ -26,7 +26,7 @@ Node *CPalgorithm(vector<Point> P, int B)
 
     while (true) {
         cout << "while... " << endl;
-        F = k_samples(P, B); // Paso 2: conjunto de samples
+        k_samples(P, B, F); // Paso 2: conjunto de samples
         cout << "se crea conjunto de samples de tamaño " << F.size() << endl;
         Fk = assignation(P, F); // Paso 3: crea el conjunto de conjuntos Fk
         cout << "se crea conjunto de conjuntos de samples de tamaño " << Fk.size() << endl;
@@ -51,8 +51,13 @@ Node *CPalgorithm(vector<Point> P, int B)
         Tk.push_back(Tj);
         cout << "ponemos el árbol en el vector anterior" << endl;
 
+        cout << "tj entries " << Tj->entries.size() << endl;
+
+        cout << "b: " << b << endl;
+
         if (Tj->entries.size() < b)
-        {                                          // si la raíz de Tj es de tamaño menor a b
+        {               
+            cout << "if?" << endl;                           // si la raíz de Tj es de tamaño menor a b
             vector<Node *> Tj_nodes = delRoot(Tj); // se quita esa raíz
             F.erase(F.begin() + j);                // se elimina pfj de F
             for (int i = 0; i < Tj_nodes.size(); i++)
@@ -82,7 +87,7 @@ Node *CPalgorithm(vector<Point> P, int B)
         {
             if (Tsup->entries[i].p == pfj)
             {
-                Tsup->entries[i].a = M[j]; // Reinicializa el shared_ptr para que apunte a M[j]
+                Tsup->entries[i].a = M[j];
                 break;
             }
             else

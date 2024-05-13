@@ -15,9 +15,8 @@ Node *newNode(vector<Point> P)
 
 /*  Paso 2:
     Elige k puntos aleatorios de P que inserta en un conjunto F*/
-vector<Point> k_samples(vector<Point> P, int B)
+void k_samples(vector<Point> P, int B, vector<Point>&F)
 {
-    vector<Point> F;
     int k = min(B,(int)ceil(P.size()/B));
     random_device rd;
     mt19937 gen(rd());
@@ -30,7 +29,6 @@ vector<Point> k_samples(vector<Point> P, int B)
         pf.y = P[random_index].y;
         F.push_back(pf); // vamos insertando los samples en F
     }
-    return F;
 }
 
 /*  Paso 3:
@@ -68,17 +66,18 @@ vector<vector<Point>> assignation(vector<Point> P, vector<Point> F)
     Si un Fk[j] es tq Fk[j].size < b
     * Quita F[j] de F
     * Por cada p en Fk[j] busca su sample F[l] más cercano de F y lo añadimos a Fk[l] */
-void redistribution(vector<vector<Point>> &Fk, vector<Point> F, double b)
+void redistribution(vector<vector<Point>> &Fk, vector<Point> &F, double b)
 {
-    vector<Point> K = F; // copiamos F para no tener problemas al recorrer el arreglo
     for (int j = 0; j < Fk.size(); j++)
     {
         if (Fk[j].size() < b)
         {                           // si algún Fk tiene tamaño menor a b, quitamos F[j] de F
-            K.erase(K.begin() + j); // quitamos el elemento F[j] del conjunto F
-            for (int i=0; i<Fk[j].size(); i++) {
-                int l = closestIndex(Fk[j][i],K);
-                Fk[l].push_back(K[l]);
+            F.erase(F.begin() + j); // quitamos el elemento F[j] del conjunto F
+            vector<Point> Fkj = Fk[j];
+            Fk.erase(Fk.begin() + j);
+            for (int i=0; i<Fkj.size(); i++) {
+                int l = closestIndex(Fkj[i], F);
+                Fk[l].push_back(F[l]);
             }
         }
     }
@@ -96,7 +95,7 @@ int minHeight(vector<Node *> Tk)
     return h_min;
 }
 // balancea el árbol y modifica F
-void balancing(Node *Tk, vector<Point> F, vector<Node *> M, int h, int i)
+void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
 {
     if (Tk->height() == h) // si su altura es igual a h
         M.push_back(Tk);   // se añade a M
