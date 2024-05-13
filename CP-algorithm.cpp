@@ -35,10 +35,7 @@ Node *CPalgorithm(vector<Point> P, int B)
     // Paso 6: se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
     vector<Node *> Tk;
     for (int j = 0; j < Fk.size(); j++)
-    {
-        Node *Tj = CPalgorithm(Fk[j], B);
-        Tk.push_back(Tj);
-    }
+        Tk.push_back(CPalgorithm(Fk[j], B));
 
     // Paso 7: 
     for (int j = 0; j < Tk.size(); j++)
