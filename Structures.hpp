@@ -91,10 +91,6 @@ struct Node
                 }
             }
             e.cr = max_distance;
-            /*if (e.a != nullptr)
-            {
-                e.a->setCR();
-            }*/
         }
     }
 };
@@ -147,20 +143,3 @@ string PointToString(Point p)
     double y = p.y;
     return (to_string(x) + to_string(y));
 };
-
-/*void printMtree(Node *T)
-{
-    if (T = NULL)
-        return;
-    else
-    {
-        const Point p = T->p;
-
-        cout << "punto raíz: " << PointToString(p) << "/np radio cobertor: " << T->cr << endl;
-        for (int i = 0; i < T->nodes.size(); i++)
-        {
-            cout << "Hijos " << i << endl;
-            printMtree(T->nodes[i]);
-        }
-    }
-}*/
