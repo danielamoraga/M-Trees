@@ -109,15 +109,9 @@ vector<entry> delRoot(Node* &T)
 // calcula altura mínima
 int minHeight(vector<Node *> &Tk)
 {
-    cout << "--- minHeight ---" << endl;
-    cout << "tk size: " << Tk.size() << endl;
     int h_min = Tk[0]->height();
-    cout << "h min: " << h_min << endl;
     for (int k = 1; k < Tk.size(); k++)
-    {
-        cout << "Tk[k] height: " << Tk[k]->height() << endl;
-        int h_min = min(h_min, Tk[k]->height());
-    }
+        h_min = min(h_min, Tk[k]->height());
     return h_min;
 }
 // balancea el árbol y modifica F
@@ -132,8 +126,8 @@ void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
         // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
         for (int j = 0; j < Tk->entries.size(); j++)
         {
-            for (int k = 0; k < Tk->entries.size(); j++)
-                balancing(Tk->entries[k].a, F, M, h, i);
+            balancing(Tk->entries[j].a, F, M, h, i);
+            if (Tk->height() == h) F.push_back(Tk->entries[j].p);
         }
     }
 }
