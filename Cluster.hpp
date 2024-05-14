@@ -100,28 +100,31 @@ class ClusterT {
         return;
       }
 
-      // Calcular el medoide como el punto con la mínima distancia promedio a todos los demás puntos
-      double minAvgDistance = numeric_limits<double>::max(); // Inicializar con el máximo valor posible
+      if (this->points.size() == 1) {
+        this->medoid = this->points[0];
+        return;
+      }
+
+      double minMaxDistance = std::numeric_limits<double>::infinity(); // Inicializar con el máximo valor posible
       Point minMedoid; // Inicializar el medoide mínimo
 
       for (const Point& p : points) {
-        double totalDistance = 0.0; // Inicializar la suma de las distancias a este punto
+        double maxDistance = 0.0; // Inicializar la máxima distancia a este punto
 
         for (const Point& q : points) {
-          totalDistance += dist(p, q); // Calcular la distancia de este punto a todos los demás
+            maxDistance = std::max(maxDistance, dist(p, q)); // Calcular la distancia máxima a este punto
         }
 
-        double avgDistance = totalDistance / points.size(); // Calcular la distancia promedio a este punto
-
-        if (avgDistance < minAvgDistance) {
-          minAvgDistance = avgDistance;
-          minMedoid = p;
+        if (maxDistance < minMaxDistance) {
+            minMaxDistance = maxDistance;
+            minMedoid = p;
         }
       }
 
       // Asignar el medoide mínimo encontrado
       medoid = minMedoid;
-    }
+  }
+
 
     /*
     Calcula el radio de cobertura de este cluster.
