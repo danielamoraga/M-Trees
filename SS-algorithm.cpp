@@ -23,17 +23,15 @@ vector<ClusterT> Cluster(vector<Point> Cin, int B){
     clusterAdd(singleton, C);
   }
 
-  // 3. Mientras |C| > 1: ESTE PASO ES MUY LENTO 😭
+  // 3. Mientras |C| > 1:
   cout << "Cluster - Paso 3" << endl;
   while (C.size() > 1){
-  cout << "Cluster - Paso 3.1" << endl;
     // 3.1 Sea c1, c2 los pares más cercanos de clusters en C tal que |c1| ≥ |c2|.
     pair<ClusterT, ClusterT> closest_pair = closestPair(C);
     ClusterT c1 = closest_pair.first;
     ClusterT c2 = closest_pair.second;
 
     // 3.2 Si |c1 ∪ c2| ≤ B, se remueve c1 y c2 de C y se añade c1 ∪ c2 a C.
-  cout << "Cluster - Paso 3.2" << endl;
 
     ClusterT c1_u_c2 = c1.cUnion(c2);
     if(c1_u_c2.getCardinality() <= B) {
