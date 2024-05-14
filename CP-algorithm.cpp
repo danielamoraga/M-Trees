@@ -38,20 +38,30 @@ Node *CPalgorithm(vector<Point> P, int B)
         Tk.push_back(CPalgorithm(Fk[j], B));
 
     // Paso 7: 
-    vector<Node *> Tk_copy = Tk;
-    for (int j = 0; j < Tk_copy.size(); j++)
+    vector<int> indices_to_remove;
+    vector<pair<Node*, Point>> new_entries;
+
+    for (int j = 0; j < Tk.size(); j++)
     {
         if (Tk[j]->entries.size() < b)
         {
-            vector<entry> Tkj = Tk_copy[j]->entries;
-            Tk.erase(Tk.begin() + j);              // se quita esa raíz
-            F.erase(F.begin() + j);                // se elimina pfj de F
+            vector<entry> Tkj = Tk[j]->entries;
+            indices_to_remove.push_back(j);
             for (int i = 0; i < Tkj.size(); i++)
             {
-                Tk.push_back(Tkj[i].a); // se trabaja con sus subárboles nuevos Tj,...Tj+p-1
-                F.push_back(Tkj[i].p); // se añaden los puntos pertinentes a F
+                new_entries.push_back(make_pair(Tkj[i].a, Tkj[i].p));
             }
         }
+    }
+    for (int i = indices_to_remove.size() - 1; i >= 0; i--)
+    {
+        Tk.erase(Tk.begin() + indices_to_remove[i]);
+        F.erase(F.begin() + indices_to_remove[i]);
+    }
+    for (auto &entry : new_entries)
+    {
+        Tk.push_back(entry.first);
+        F.push_back(entry.second);
     }
 
     vector<Node *> M;
