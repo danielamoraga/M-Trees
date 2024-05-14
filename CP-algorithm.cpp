@@ -49,7 +49,8 @@ Node *CPalgorithm(vector<Point> P, int B)
             indices_to_remove.push_back(j);
             for (int i = 0; i < Tkj.size(); i++)
             {
-                new_entries.push_back(make_pair(Tkj[i].a, Tkj[i].p));
+                Node *thisSubTree = Tkj[i].a;
+                if (thisSubTree != nullptr) new_entries.push_back(make_pair(thisSubTree, Tkj[i].p));
             }
         }
     }
