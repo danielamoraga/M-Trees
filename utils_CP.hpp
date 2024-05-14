@@ -121,13 +121,21 @@ void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
         M.push_back(Tk);   // se añade a M
     else
     {                           // sino
-        F.erase(F.begin() + i); // se borra el punto pertinente en F
+        if (i<F.size()) F.erase(F.begin() + i); // se borra el punto pertinente en F
         // se hace una búsqueda exhaustiva en Tj de todos sus subárboles de altura igual a h y se insertan en M
         // y se insertan los puntos raíz de T1',...,Tp',pf1',...,pfp' en F
         for (int j = 0; j < Tk->entries.size(); j++)
         {
-            balancing(Tk->entries[j].a, F, M, h, i);
-            if (Tk->height() == h) F.push_back(Tk->entries[j].p);
+            Node *thisSubTree = Tk->entries[j].a;
+            if (thisSubTree != nullptr)
+            {
+                if (thisSubTree->height() == h)
+                {
+                    M.push_back(thisSubTree); // Se inserta el subárbol en M
+                    F.push_back(thisSubTree->entries[0].p); // Se inserta el punto raíz en F
+                }
+                else balancing(thisSubTree,F,M,h,i);
+            }
         }
     }
 }
