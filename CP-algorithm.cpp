@@ -53,7 +53,7 @@ Node *CPalgorithm(vector<Point> P, int B)
             }
         }
     }
-    for (int i = indices_to_remove.size() - 1; i >= 0; i--)
+    for (auto &i : indices_to_remove)
     {
         Tk.erase(Tk.begin() + indices_to_remove[i]);
         F.erase(F.begin() + indices_to_remove[i]);
