@@ -38,11 +38,12 @@ Node *CPalgorithm(vector<Point> P, int B)
         Tk.push_back(CPalgorithm(Fk[j], B));
 
     // Paso 7: 
-    for (int j = 0; j < Tk.size(); j++)
+    vector<Node *> Tk_copy = Tk;
+    for (int j = 0; j < Tk_copy.size(); j++)
     {
         if (Tk[j]->entries.size() < b)
         {
-            vector<entry> Tkj = Tk[j]->entries;
+            vector<entry> Tkj = Tk_copy[j]->entries;
             Tk.erase(Tk.begin() + j);              // se quita esa raíz
             F.erase(F.begin() + j);                // se elimina pfj de F
             for (int i = 0; i < Tkj.size(); i++)
