@@ -95,7 +95,6 @@ Input: Cin
 entry OutputHoja(vector<Point> Cin){
   // 1. Sea g el medoide primario de Cin. Sea r = 0. Sea C = {} (el que corresponderá al nodo hoja).
   cout << "OutputHoja - Paso 1" << endl;
-
   Point g = getPrimaryMedoid(Cin);
   double r = 0;
   Node* C = new Node();
@@ -117,8 +116,7 @@ entry OutputHoja(vector<Point> Cin){
 
   // 4. Retornamos (g, r, a)
   cout << "OutputHoja - Paso 4" << endl;
-  entry ret(g,r,a);
-  return ret;
+  return entry(g, r, a);
 }
 
 /*
@@ -131,21 +129,19 @@ entry OutputInterno(vector<entry> Cmra){
   // 1. Sea Cin = {g|∃(g, r, a) ∈ Cmra}. G el medoide primario de Cin. Sea R = 0. Sea C = {} (el que corresponderá a un nodo interno).
   cout << "OutputInterno - Paso 1" << endl;
   vector<Point> Cin;
+  double R = 0;
   for(entry ent : Cmra) {
     Cin.push_back(ent.p);
+    R = max(R, dist(ent.p, getPrimaryMedoid(Cin)) + ent.cr);
   }
   Point G = getPrimaryMedoid(Cin);
-  double R = 0;
   Node *C = new Node();
 
   // 2. Por cada (g, r, a) ∈ Cmra: Añadir (g, r, a) a C. Se setea R = max(R, dist(G, g) + r)
   cout << "OutputInterno - Paso 2" << endl;
   for(entry ent : Cmra) {
-    Point g = ent.p;
-    double r = ent.cr;
-    Node* a = ent.a;
-    entry e(g, r, a);
-    R = max(R, dist(G, g) + r);
+    // No es necesario crear nuevas entradas, simplemente añadimos las existentes
+    C->entries.push_back(ent);
   }
 
   // 3. Guardamos el puntero a C como A.
@@ -154,8 +150,7 @@ entry OutputInterno(vector<entry> Cmra){
 
   // 4. Retornamos (G, R, A)
   cout << "OutputInterno - Paso 4" << endl;
-  entry ret(G, R, A);
-  return ret;
+  return entry(G, R, A);
 
 }
 
@@ -203,7 +198,7 @@ Node* SSalgorithm(vector<Point> Cin, int B){
         Point g = ent.p;
         vector<Point> c_points = c.getPoints();
         if (find(c_points.begin(), c_points.end(), g) != c_points.end()) {
-          s.push_back(ent.p);
+          s.push_back(ent);
         }
       }
       Cmra.push_back(s);
