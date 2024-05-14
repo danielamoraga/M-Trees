@@ -1,5 +1,6 @@
 #include "Cluster.hpp"
 #include <cfloat>
+
 // Función para comparar dos puntos según su coordenada X
 int compareX(const void* a, const void* b) {
     Point *p1 = (Point *)a, *p2 = (Point *)b;
@@ -51,7 +52,6 @@ double stripClosest(Point strip[], int size, double d) {
     return min;
 }
 
-
 // Función para encontrar la distancia más cercana entre los puntos de un conjunto ordenado por coordenadas X
 double closestUtil(Point P[], int n) {
     // Si hay 2 o 3 puntos, usar fuerza bruta
@@ -79,9 +79,6 @@ double closestUtil(Point P[], int n) {
     // Encontrar los puntos más cercanos en la tira y devolver la distancia más pequeña entre d y la distancia más pequeña en la tira
     return min(d, stripClosest(strip, j, d));
 }
-
-
-
 
 /* FUNCIONES AUXILIARES PARA FUNCION CLUSTER */
 
@@ -146,32 +143,48 @@ puntos, y alternadamente se van agregando el punto más cercano a alguno de esto
 dos grupos resultantes. Esto se prueba para todo par de puntos y se elige el par que tenga el
 mínimo radio cobertor máximo.
 */
-pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){
+pair<ClusterT, ClusterT> minMaxDivide(ClusterT c) {
   int n = c.getCardinality();
 
   pair<ClusterT, ClusterT> dividedClusters;
-  double minMaxRadius = numeric_limits<double>::max(); // Inicializamos con el máximo valor posible
+  double minMaxRadius = numeric_limits<double>::max();
 
   // Iterar sobre todos los pares de puntos y encontrar el par con el mínimo radio cobertor máximo
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < n - 1; ++i) {
       for (int j = i + 1; j < n; ++j) {
 
-        // Creamos dos clusters temporales con estos dos puntos
-        ClusterT cluster1;
-        cluster1.addPoint(c.getPointByIndex(i));
-        ClusterT cluster2;
-        cluster2.addPoint(c.getPointByIndex(j));
+        // Obtener los puntos de los clusters temporales
+        Point p1 = c.getPointByIndex(i);
+        Point p2 = c.getPointByIndex(j);
 
-        // Agregar alternadamente el punto más cercano a alguno de estos centros
+        // Variables para almacenar los puntos más cercanos
+        int closestToPoint1Index = -1;
+        int closestToPoint2Index = -1;
+        double minDistToPoint1 = numeric_limits<double>::max();
+        double minDistToPoint2 = numeric_limits<double>::max();
+
+        // Encontrar los puntos más cercanos a p1 y p2
         for (int k = 0; k < n; ++k) {
           if (k != i && k != j) {
-            if (dist(c.getPointByIndex(k), c.getPointByIndex(i)) < dist(c.getPointByIndex(k), c.getPointByIndex(j))) {
-              cluster1.addPoint(c.getPointByIndex(k));
-            } else {
-              cluster2.addPoint(c.getPointByIndex(k));
+            double distToP1 = dist(c.getPointByIndex(k), p1);
+            double distToP2 = dist(c.getPointByIndex(k), p2);
+            if (distToP1 < minDistToPoint1) {
+              minDistToPoint1 = distToP1;
+              closestToPoint1Index = k;
+            }
+            if (distToP2 < minDistToPoint2) {
+              minDistToPoint2 = distToP2;
+              closestToPoint2Index = k;
             }
           }
         }
+
+        // Crear los clusters a partir de los puntos más cercanos
+        ClusterT cluster1, cluster2;
+        cluster1.addPoint(p1);
+        cluster2.addPoint(p2);
+        if (closestToPoint1Index != -1) cluster1.addPoint(c.getPointByIndex(closestToPoint1Index));
+        if (closestToPoint2Index != -1) cluster2.addPoint(c.getPointByIndex(closestToPoint2Index));
 
         // Calcular el radio cobertor máximo entre los dos grupos resultantes
         cluster1.computeRadius();
@@ -189,6 +202,7 @@ pair<ClusterT, ClusterT> minMaxDivide(ClusterT c){
   // Retornar el par de clusters divididos
   return dividedClusters;
 }
+
 
 /*
 Obtiene el medoide primario de un set de puntos.
