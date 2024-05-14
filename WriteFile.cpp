@@ -1,4 +1,5 @@
 #include "CP-algorithm.cpp"
+#include "SS-algorithm.cpp"
 #include <random>
 #include <iostream>
 #include <fstream>
@@ -43,6 +44,7 @@ vector<query> createRandomQueries()
 
 int main()
 {
+    int B = 4096;
     for (int exp = 10; exp <= 25; exp++)
     {
         vector<Point> P = createRandomPoints(exp); // 2^10
@@ -51,7 +53,13 @@ int main()
         vector<Point> resSS; // vector que contendrá los puntos de Q contenidos en el árbol
         int accesos = 0;
         // Crear un M-Tree con el algoritmo CP
-        Node *MTree = CPalgorithm(P, 4096);
+        cout << "Creando M-Tree con algoritmo CP..." << endl;
+        Node *MTreeCP = CPalgorithm(P, B);
+
+        // Crear un M-Tree con el algoritmo CP
+        cout << "Creando M-Tree con algoritmo SS..." << endl;
+        Node *MTreeSS = SSalgorithm(P, B);
+
 
         // Abrir un archivo para escribir
         std::ofstream file;
@@ -68,7 +76,7 @@ int main()
             auto start = std::chrono::high_resolution_clock::now();
 
             // Buscar la consulta en el M-Tree
-            pair<vector<Point>, int> result = search(MTree, Q[i], resCP, accesos);
+            pair<vector<Point>, int> result = search(MTreeCP, Q[i], resCP, accesos);
 
             // Fin del tiempo
             auto finish = std::chrono::high_resolution_clock::now();
@@ -95,7 +103,7 @@ int main()
             auto start = std::chrono::high_resolution_clock::now();
 
             // Buscar la consulta en el M-Tree
-            pair<vector<Point>, int> result = search(MTree, Q[i], resCP, accesos);
+            pair<vector<Point>, int> result = search(MTreeSS, Q[i], resCP, accesos);
 
             // Fin del tiempo
             auto finish = std::chrono::high_resolution_clock::now();
