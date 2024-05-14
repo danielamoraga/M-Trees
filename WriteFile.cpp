@@ -79,8 +79,7 @@ int main()
             // Mostrar los resultados
             int accessCount = result.second;
 
-            cout << "Accesos: " << accessCount << " ";
-            cout << "Tiempo transcurrido: " << duration.count() << "s" << endl;
+            cout << "CP" << "," << exp << "," << i << "," << accessCount << "," << duration.count() << "s" << endl;
 
             // Escribir los resultados en el archivo
             file << "CP" << "," << exp << "," << i << "," << accessCount << "," << duration.count() << "\n";
@@ -108,8 +107,7 @@ int main()
             vector<Point> points = result.first;
             int accessCount = result.second;
 
-            cout << "Accesos: " << accessCount << " ";
-            cout << "Tiempo transcurrido: " << duration.count() << "s" << endl;
+            cout << "SS" << "," << exp << "," << i << "," << accessCount << "," << duration.count() << "s" << endl;
 
             // Escribir los resultados en el archivo
             file << "SS" << "," << exp << "," << i << "," << accessCount << "," << duration.count() << "\n";
