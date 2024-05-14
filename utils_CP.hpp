@@ -92,19 +92,6 @@ void redistribution(vector<vector<Point>> &Fk, vector<Point> &F, double b)
     return Tk;
 }*/
 
-/*  Paso 7:
-    Si la raíz del árbol es de un tamaño menor a b, se quita esa raíz, se elimina pfj de F y se trabaja
-    con sus subárboles como nuevos Tj , . . . , Tj+p−1, se añaden los puntos pertinentes a F. */
-// Método para eliminar la raíz de un árbol, retornando los hijos del arbol como vector de nodos.
-vector<entry> delRoot(Node* &T)
-{
-    vector<entry> c; // entradas de T
-    for (int i = 0; i < T->entries.size(); i++)
-        c.push_back(T->entries[i]);
-    T->entries.clear();
-    return c;
-}
-
 /*  Paso 9: Balanceamiento */
 // calcula altura mínima
 int minHeight(vector<Node *> &Tk)
@@ -132,7 +119,7 @@ void balancing(Node *Tk, vector<Point> &F, vector<Node *> &M, int h, int i)
                 if (thisSubTree->height() == h)
                 {
                     M.push_back(thisSubTree); // Se inserta el subárbol en M
-                    F.push_back(thisSubTree->entries[0].p); // Se inserta el punto raíz en F
+                    F.push_back(Tk->entries[j].p); // Se inserta el punto raíz en F
                 }
                 else balancing(thisSubTree,F,M,h,i);
             }

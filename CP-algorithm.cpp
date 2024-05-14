@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include "utils_CP.hpp"
+#include <set>
 
 /*  Algoritmo Ciaccia-Patella:
     Realiza Clustering de n puntos P = {p1, ..., pn}
@@ -33,36 +34,34 @@ Node *CPalgorithm(vector<Point> P, int B)
     }
 
     // Paso 6: se realiza recursivamente el algoritmo CP en cada Fk[j] obteniendo el árbol Tj
-    vector<Node *> Tk;
-    for (int j = 0; j < Fk.size(); j++)
-        Tk.push_back(CPalgorithm(Fk[j], B));
+    vector<Node*> Tk;
+    for (int j = 0; j < Fk.size(); j++) {
+        Node* Tj = CPalgorithm(Fk[j], B);
+        Tk.push_back(Tj);
+    }
 
-    // Paso 7: 
-    vector<int> indices_to_remove;
-    vector<pair<Node*, Point>> new_entries;
+    // Paso 7:
+    for (Node* Tj: Tk) {
+        // Si la raiz del arbol es menor a b
+        if (Tj->entries.size() < b){
 
-    for (int j = 0; j < Tk.size(); j++)
-    {
-        if (Tk[j]->entries.size() < b)
-        {
-            vector<entry> Tkj = Tk[j]->entries;
-            indices_to_remove.push_back(j);
-            for (int i = 0; i < Tkj.size(); i++)
-            {
-                Node *thisSubTree = Tkj[i].a;
-                if (thisSubTree != nullptr) new_entries.push_back(make_pair(thisSubTree, Tkj[i].p));
+            auto it = find(Tk.begin(), Tk.end(), Tj);
+            int j = it - Tk.begin();
+            Tk.erase(it);
+
+            // se elimina pfj de F
+            F.erase(F.begin() + j);
+
+            for (entry e: Tj->entries){
+                if (e.a != nullptr) {
+                    Node* newTj = e.a;
+                    Tk.push_back(newTj);
+
+                    // se añaden los puntos pertinentes a F
+                    F.push_back(e.p);
+                }
             }
         }
-    }
-    for (auto &i : indices_to_remove)
-    {
-        Tk.erase(Tk.begin() + indices_to_remove[i]);
-        F.erase(F.begin() + indices_to_remove[i]);
-    }
-    for (auto &entry : new_entries)
-    {
-        Tk.push_back(entry.first);
-        F.push_back(entry.second);
     }
 
     vector<Node *> M;

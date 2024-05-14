@@ -69,9 +69,9 @@ struct Node
     bool isLeaf()
     {
         bool isLeaf = false;
-        for (int i = 0; i < entries.size(); i++)
+        for (entry& e : entries)
         {
-            if (entries[i].a == nullptr && entries[i].cr == 0.0)
+            if (e.a == nullptr && e.cr == 0.0)
             {
                 isLeaf = true;
             }
