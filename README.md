@@ -42,7 +42,7 @@ make runSS
 ### Para ejecutar el experimento:
 
 ```sh
-make runWF
+make run
 ```
 
 ## Salida
