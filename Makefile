@@ -11,8 +11,8 @@ runSS:
 	g++ SS-algorithm.cpp -o $(APP_PATH)
 	$(APP_PATH)
 
-runWF:
-	g++ WriteFile.cpp -o $(APP_PATH)
+run:
+	g++ Main.cpp -o $(APP_PATH)
 	$(APP_PATH)
 
 clean:
